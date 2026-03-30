@@ -73,9 +73,9 @@ async function getProducts(searchParams: Record<string, string | undefined>) {
 export default async function ProductsPage({
   searchParams,
 }: {
-  searchParams: Record<string, string | undefined>;
+  searchParams: Promise<Record<string, string | undefined>>;
 }) {
-  const data = await getProducts(searchParams);
+  const data = await getProducts(await searchParams);
 
   return (
     <div className="min-h-screen bg-cream-50">

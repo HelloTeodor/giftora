@@ -1,18 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { loadStripe } from '@stripe/stripe-js';
 import { Shield, Truck, Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useCartStore } from '@/store/cart';
 import { formatPrice } from '@/lib/utils';
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const getStripe = () => import('@stripe/stripe-js').then(m => m.loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!));
 
 const schema = z.object({
   email: z.string().email('Valid email required'),
@@ -60,10 +59,11 @@ export default function CheckoutPage() {
   const shippingCost = shippingMethod === 'STANDARD' && subtotal >= 75 ? 0 : selectedShipping.price;
   const total = subtotal + shippingCost;
 
-  if (items.length === 0) {
-    router.push('/cart');
-    return null;
-  }
+  useEffect(() => {
+    if (items.length === 0) router.push('/cart');
+  }, [items.length, router]);
+
+  if (items.length === 0) return null;
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
@@ -84,7 +84,7 @@ export default function CheckoutPage() {
       const { sessionId, error } = await res.json();
       if (error) { toast.error(error); return; }
 
-      const stripe = await stripePromise;
+      const stripe = await getStripe();
       const result = await stripe?.redirectToCheckout({ sessionId });
       if (result?.error) toast.error(result.error.message || 'Checkout failed');
     } catch (err) {
