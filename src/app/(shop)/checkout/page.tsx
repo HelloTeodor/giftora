@@ -6,13 +6,12 @@ import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { loadStripe } from '@stripe/stripe-js';
 import { Shield, Truck, Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useCartStore } from '@/store/cart';
 import { formatPrice } from '@/lib/utils';
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const getStripe = () => import('@stripe/stripe-js').then(m => m.loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!));
 
 const schema = z.object({
   email: z.string().email('Valid email required'),
@@ -84,7 +83,7 @@ export default function CheckoutPage() {
       const { sessionId, error } = await res.json();
       if (error) { toast.error(error); return; }
 
-      const stripe = await stripePromise;
+      const stripe = await getStripe();
       const result = await stripe?.redirectToCheckout({ sessionId });
       if (result?.error) toast.error(result.error.message || 'Checkout failed');
     } catch (err) {
