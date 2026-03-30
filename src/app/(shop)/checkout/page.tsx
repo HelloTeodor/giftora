@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
@@ -59,10 +59,11 @@ export default function CheckoutPage() {
   const shippingCost = shippingMethod === 'STANDARD' && subtotal >= 75 ? 0 : selectedShipping.price;
   const total = subtotal + shippingCost;
 
-  if (items.length === 0) {
-    router.push('/cart');
-    return null;
-  }
+  useEffect(() => {
+    if (items.length === 0) router.push('/cart');
+  }, [items.length, router]);
+
+  if (items.length === 0) return null;
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
