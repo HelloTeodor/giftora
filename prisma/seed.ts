@@ -183,6 +183,59 @@ async function main() {
   }
   console.log('✅ Products created:', products.length);
 
+  // Collections
+  await Promise.all([
+    prisma.collection.upsert({
+      where: { slug: 'bestsellers' },
+      update: {},
+      create: {
+        name: 'Bestsellers',
+        slug: 'bestsellers',
+        description: 'Our most loved gift boxes, chosen by thousands of happy customers.',
+        image: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800',
+        isActive: true,
+        sortOrder: 1,
+      },
+    }),
+    prisma.collection.upsert({
+      where: { slug: 'luxury-edit' },
+      update: {},
+      create: {
+        name: 'The Luxury Edit',
+        slug: 'luxury-edit',
+        description: 'Premium, indulgent gift boxes for those who deserve the very best.',
+        image: 'https://images.unsplash.com/photo-1520006403909-838d6b92c22e?w=800',
+        isActive: true,
+        sortOrder: 2,
+      },
+    }),
+    prisma.collection.upsert({
+      where: { slug: 'under-50' },
+      update: {},
+      create: {
+        name: 'Under €50',
+        slug: 'under-50',
+        description: 'Thoughtful, beautiful gift boxes that won\'t break the bank.',
+        image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=800',
+        isActive: true,
+        sortOrder: 3,
+      },
+    }),
+    prisma.collection.upsert({
+      where: { slug: 'corporate-gifting' },
+      update: {},
+      create: {
+        name: 'Corporate Gifting',
+        slug: 'corporate-gifting',
+        description: 'Impress clients, reward teams, and celebrate milestones in style.',
+        image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=800',
+        isActive: true,
+        sortOrder: 4,
+      },
+    }),
+  ]);
+  console.log('✅ Collections created');
+
   // Sample coupon
   await prisma.coupon.upsert({
     where: { code: 'WELCOME10' },
