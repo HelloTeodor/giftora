@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /Users/helloteodor/Desktop/giftora && git status --porcelain 2>/dev/null | grep -q . && echo '{\"systemMessage\": \"⚠️ VERCEL REMINDER: You have uncommitted changes. Commit and push to GitHub so Vercel redeploys: git add -A && git commit -m \\\"your message\\\" && git push\"}' || true"
+          }
+        ]
+      }
+    ]
+  }
+}
