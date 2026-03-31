@@ -5,8 +5,9 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = { title: 'Reviews | Admin' };
 
-export default async function AdminReviewsPage({ searchParams }: { searchParams: { status?: string } }) {
-  const status = (searchParams.status || 'PENDING') as 'PENDING' | 'APPROVED' | 'REJECTED';
+export default async function AdminReviewsPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
+  const { status: statusParam } = await searchParams;
+  const status = (statusParam || 'PENDING') as 'PENDING' | 'APPROVED' | 'REJECTED';
 
   const reviews = await prisma.review.findMany({
     where: { status },

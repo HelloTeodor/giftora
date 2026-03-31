@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import { Plus, Tag } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+import { AdminCouponActions } from '@/components/admin/AdminCouponActions';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = { title: 'Coupons | Admin' };
@@ -31,6 +32,7 @@ export default async function AdminCouponsPage() {
               <th className="text-left px-5 py-3">Uses</th>
               <th className="text-left px-5 py-3">Expires</th>
               <th className="text-left px-5 py-3">Status</th>
+              <th className="text-right px-5 py-3">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
@@ -57,6 +59,9 @@ export default async function AdminCouponsPage() {
                   <span className={`text-xs font-semibold px-2 py-1 rounded-full ${c.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
                     {c.isActive ? 'Active' : 'Inactive'}
                   </span>
+                </td>
+                <td className="px-5 py-4 text-right">
+                  <AdminCouponActions couponId={c.id} />
                 </td>
               </tr>
             ))}
