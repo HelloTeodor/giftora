@@ -13,6 +13,7 @@ export async function POST(req: NextRequest) {
       email, firstName, lastName, phone,
       addressLine1, addressLine2, city, state, postalCode, country,
       shippingMethod, giftMessage, items,
+      couponCode, discountAmount: clientDiscountAmount,
     } = body;
 
     if (!items || items.length === 0) {
@@ -57,6 +58,36 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // Validate coupon server-side and apply discount
+    let verifiedDiscountAmount = 0;
+    if (couponCode) {
+      const coupon = await prisma.coupon.findUnique({ where: { code: couponCode.toUpperCase() } });
+      if (coupon && coupon.isActive) {
+        const now = new Date();
+        const validTime = (!coupon.startsAt || coupon.startsAt <= now) && (!coupon.expiresAt || coupon.expiresAt >= now);
+        const validUsage = !coupon.usageLimit || coupon.usageCount < coupon.usageLimit;
+        const validMin = !coupon.minOrderAmount || subtotal >= Number(coupon.minOrderAmount);
+        if (validTime && validUsage && validMin) {
+          const val = Number(coupon.value);
+          if (coupon.type === 'PERCENTAGE') verifiedDiscountAmount = Math.round(subtotal * val / 100 * 100) / 100;
+          else if (coupon.type === 'FIXED') verifiedDiscountAmount = Math.min(val, subtotal);
+          else if (coupon.type === 'FREE_SHIPPING') verifiedDiscountAmount = shippingCost;
+        }
+      }
+    }
+
+    // Add discount line item if applicable (create Stripe coupon)
+    let stripeCouponId: string | undefined;
+    if (verifiedDiscountAmount > 0) {
+      const stripeCoupon = await stripe.coupons.create({
+        amount_off: Math.round(verifiedDiscountAmount * 100),
+        currency: 'eur',
+        duration: 'once',
+        name: couponCode ? `Discount: ${couponCode}` : 'Discount',
+      });
+      stripeCouponId = stripeCoupon.id;
+    }
+
     const orderNumber = generateOrderNumber();
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;
 
@@ -64,11 +95,16 @@ export async function POST(req: NextRequest) {
       mode: 'payment',
       line_items: lineItems,
       customer_email: email,
+      ...(stripeCouponId
+        ? { discounts: [{ coupon: stripeCouponId }] }
+        : { allow_promotion_codes: true }),
       metadata: {
         orderNumber,
         userId: session?.user.id || '',
         shippingMethod,
         giftMessage: giftMessage || '',
+        couponCode: couponCode || '',
+        discountAmount: String(verifiedDiscountAmount),
         addressLine1,
         addressLine2: addressLine2 || '',
         city,
@@ -80,7 +116,6 @@ export async function POST(req: NextRequest) {
       },
       success_url: `${appUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}&order=${orderNumber}`,
       cancel_url: `${appUrl}/checkout`,
-      allow_promotion_codes: true,
       billing_address_collection: 'auto',
       shipping_address_collection: { allowed_countries: ['IE', 'GB', 'DE', 'FR', 'ES', 'IT', 'NL', 'US', 'CA'] },
     });

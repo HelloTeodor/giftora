@@ -54,12 +54,17 @@ export function ProductForm({ categories, product }: Props) {
     },
   });
 
-  const name = watch('name');
+  const nameValue = watch('name');
+
+  // Auto-generate slug from name when creating a new product
+  useState(() => {
+    if (!product && nameValue) setValue('slug', slugify(nameValue));
+  });
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    setValue('name', val);
-    if (!product) setValue('slug', slugify(val));
+    setValue('name', val, { shouldValidate: true });
+    if (!product) setValue('slug', slugify(val), { shouldValidate: true });
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,7 +92,16 @@ export function ProductForm({ categories, product }: Props) {
     }
     setSaving(true);
     try {
-      const payload = { ...data, images: images.map((img, i) => ({ url: img.url, isPrimary: i === 0, sortOrder: i })) };
+      const payload = {
+        ...data,
+        // Convert 0 (from empty number inputs) to null for optional price fields
+        salePrice: data.salePrice ? Number(data.salePrice) : null,
+        costPrice: data.costPrice ? Number(data.costPrice) : null,
+        basePrice: Number(data.basePrice),
+        stock: Number(data.stock),
+        lowStockAlert: Number(data.lowStockAlert) || 5,
+        images: images.map((img, i) => ({ url: img.url, isPrimary: i === 0, sortOrder: i })),
+      };
       const url = product ? `/api/admin/products/${product.id}` : '/api/admin/products';
       const method = product ? 'PATCH' : 'POST';
       const res = await fetch(url, {
@@ -118,8 +132,9 @@ export function ProductForm({ categories, product }: Props) {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Product Name *</label>
               <input
-                {...register('name')}
-                onChange={handleNameChange}
+                {...register('name', {
+                  onChange: handleNameChange,
+                })}
                 className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400"
               />
               {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}

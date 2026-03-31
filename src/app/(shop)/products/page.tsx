@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 import { ProductsClient } from '@/components/shop/ProductsClient';
 import type { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'All Gift Boxes',
   description: 'Browse our full collection of premium gift boxes for every occasion.',

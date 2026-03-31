@@ -6,6 +6,8 @@ import { ChevronRight, Clock, User, Tag, ArrowLeft } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 import type { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic';
+
 interface Props { params: Promise<{ slug: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
