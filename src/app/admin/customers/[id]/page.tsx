@@ -37,7 +37,9 @@ export default async function AdminCustomerDetailPage({ params }: Props) {
       wishlistItems: {
         include: {
           product: {
-            select: { id: true, name: true, slug: true, basePrice: true, salePrice: true, images: { take: 1, orderBy: { sortOrder: 'asc' }, select: { url: true } } },
+            include: {
+              images: { orderBy: { sortOrder: 'asc' }, take: 1 },
+            },
           },
         },
         orderBy: { createdAt: 'desc' },
@@ -241,41 +243,57 @@ export default async function AdminCustomerDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Wishlist */}
-      {customer.wishlistItems.length > 0 && (
-        <div className="bg-white rounded-xl shadow-card overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
-            <Heart size={16} className="text-pink-500 fill-pink-500" />
-            <h2 className="font-semibold text-navy-900">Wishlist ({customer._count.wishlistItems})</h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-6">
+      {/* Wishlist — always shown */}
+      <div className="bg-white rounded-xl shadow-card overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+          <Heart size={16} className="text-pink-500 fill-pink-500" />
+          <h2 className="font-semibold text-navy-900">Wishlist ({customer._count.wishlistItems} {customer._count.wishlistItems === 1 ? 'item' : 'items'})</h2>
+        </div>
+        {customer.wishlistItems.length === 0 ? (
+          <p className="px-6 py-8 text-center text-gray-400 text-sm">No wishlist items found</p>
+        ) : (
+          <div className="divide-y divide-gray-100">
             {customer.wishlistItems.map(({ product, createdAt }) => {
               const price = Number(product.salePrice || product.basePrice);
               const wasPrice = product.salePrice ? Number(product.basePrice) : null;
               const img = product.images[0]?.url;
               return (
-                <div key={product.id} className="flex items-center gap-3 border border-gray-100 rounded-xl p-3">
-                  <div className="w-12 h-12 rounded-lg bg-cream-100 shrink-0 overflow-hidden">
+                <div key={product.id} className="flex items-center gap-4 px-6 py-4">
+                  <div className="w-14 h-14 rounded-xl bg-gray-100 shrink-0 overflow-hidden border border-gray-100">
                     {img
                       ? <img src={img} alt={product.name} className="w-full h-full object-cover" />
-                      : <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">No img</div>}
+                      : <div className="w-full h-full flex items-center justify-center">
+                          <Heart size={18} className="text-gray-300" />
+                        </div>}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <Link href={`/products/${product.slug}`} target="_blank" className="text-sm font-semibold text-gray-900 truncate block hover:text-gold-600">
+                    <Link
+                      href={`/products/${product.slug}`}
+                      target="_blank"
+                      className="font-semibold text-gray-900 hover:text-gold-600 transition-colors"
+                    >
                       {product.name}
                     </Link>
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-2 mt-0.5">
                       <span className="text-sm font-bold text-gold-700">{formatPrice(price)}</span>
-                      {wasPrice && <span className="text-xs text-gray-400 line-through">{formatPrice(wasPrice)}</span>}
+                      {wasPrice && (
+                        <span className="text-xs text-gray-400 line-through">{formatPrice(wasPrice)}</span>
+                      )}
+                      {product.salePrice && (
+                        <span className="text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded font-medium">Sale</span>
+                      )}
                     </div>
-                    <p className="text-xs text-gray-400">Added {formatDate(createdAt)}</p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-xs text-gray-400">Added</p>
+                    <p className="text-xs font-medium text-gray-600">{formatDate(createdAt)}</p>
                   </div>
                 </div>
               );
             })}
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Reviews */}
       {customer.reviews.length > 0 && (
