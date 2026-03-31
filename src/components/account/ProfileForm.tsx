@@ -4,8 +4,9 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { User, Mail, Phone, Star } from 'lucide-react';
+import { Mail, Phone, Star, AlertTriangle, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { signOut } from 'next-auth/react';
 import { formatDate } from '@/lib/utils';
 
 const schema = z.object({
@@ -27,6 +28,8 @@ interface Props {
 
 export function ProfileForm({ user }: Props) {
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const { register, handleSubmit, formState: { errors, isDirty } } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -54,6 +57,25 @@ export function ProfileForm({ user }: Props) {
       }
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    try {
+      const res = await fetch('/api/users/me', { method: 'DELETE' });
+      if (res.ok) {
+        toast.success('Account deleted. Signing you out…');
+        await signOut({ callbackUrl: '/' });
+      } else {
+        const json = await res.json();
+        toast.error(json.error || 'Failed to delete account');
+        setDeleting(false);
+        setShowDeleteConfirm(false);
+      }
+    } catch {
+      toast.error('Something went wrong');
+      setDeleting(false);
     }
   };
 
@@ -116,11 +138,48 @@ export function ProfileForm({ user }: Props) {
 
       {/* Danger zone */}
       <div className="card-premium p-6 border border-red-100">
-        <h2 className="font-serif text-xl font-semibold text-navy-950 mb-3">Danger Zone</h2>
-        <p className="text-sm text-cream-500 mb-4">Permanently delete your account and all associated data. This action cannot be undone.</p>
-        <button className="text-sm text-red-500 border border-red-200 px-4 py-2 rounded-lg hover:bg-red-50 transition-colors">
-          Delete Account
-        </button>
+        <h2 className="font-serif text-xl font-semibold text-navy-950 mb-2">Danger Zone</h2>
+        <p className="text-sm text-cream-500 mb-5">
+          Permanently delete your account and all associated data. Your order history will be anonymised. This action cannot be undone.
+        </p>
+
+        {!showDeleteConfirm ? (
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="text-sm text-red-500 border border-red-200 px-4 py-2 rounded-lg hover:bg-red-50 transition-colors"
+          >
+            Delete Account
+          </button>
+        ) : (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-5 space-y-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle size={18} className="text-red-500 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-semibold text-red-700 text-sm">Are you absolutely sure?</p>
+                <p className="text-red-600 text-xs mt-1">
+                  This will immediately sign you out and delete your account. Your personal data will be removed and this cannot be reversed.
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deleting}
+                className="flex items-center gap-2 text-sm font-semibold bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition-colors disabled:opacity-60"
+              >
+                {deleting && <Loader2 size={14} className="animate-spin" />}
+                {deleting ? 'Deleting…' : 'Yes, delete my account'}
+              </button>
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={deleting}
+                className="text-sm text-cream-500 hover:text-navy-700 px-4 py-2 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
