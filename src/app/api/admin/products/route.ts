@@ -22,10 +22,10 @@ const schema = z.object({
   metaTitle: z.string().optional().nullable(),
   metaDesc: z.string().optional().nullable(),
   images: z.array(z.object({
-    url: z.string().url(),
+    url: z.string().min(1),
     isPrimary: z.boolean().default(false),
     sortOrder: z.coerce.number().default(0),
-  })).optional(),
+  })).optional().transform(imgs => imgs?.filter(i => i.url && i.url.startsWith('http'))),
 });
 
 export async function POST(req: NextRequest) {

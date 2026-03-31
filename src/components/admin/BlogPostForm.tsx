@@ -88,11 +88,11 @@ export function BlogPostForm({ post, authorName }: Props) {
       form.append('file', file);
       const res = await fetch('/api/upload', { method: 'POST', body: form });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      if (!res.ok || !data.url) throw new Error(data.error || 'No URL returned');
       setImage(data.url);
       toast.success('Image uploaded');
     } catch {
-      toast.error('Upload failed');
+      toast.error('Upload failed — paste an image URL below instead');
     } finally {
       setUploading(false);
     }
@@ -207,6 +207,30 @@ export function BlogPostForm({ post, authorName }: Props) {
               </div>
               <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploading} />
             </label>
+            <div className="flex gap-2 mt-3">
+              <input
+                type="url"
+                placeholder="Or paste an image URL (https://...)"
+                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const val = (e.target as HTMLInputElement).value.trim();
+                    if (val) { try { new URL(val); setImage(val); (e.target as HTMLInputElement).value = ''; } catch { toast.error('Invalid URL'); } }
+                  }
+                }}
+              />
+              <button
+                type="button"
+                onClick={(e) => {
+                  const input = (e.currentTarget.previousElementSibling as HTMLInputElement);
+                  const val = input.value.trim();
+                  if (!val) return;
+                  try { new URL(val); setImage(val); input.value = ''; } catch { toast.error('Invalid URL'); }
+                }}
+                className="px-3 py-2 bg-navy-950 text-white text-sm font-medium rounded-lg hover:bg-navy-800 transition-colors"
+              >Add</button>
+            </div>
             {image && (
               <button type="button" onClick={() => setImage(null)} className="mt-2 text-xs text-red-500 hover:underline">
                 Remove image
