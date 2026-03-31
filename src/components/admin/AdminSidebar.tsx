@@ -6,7 +6,7 @@ import { signOut } from 'next-auth/react';
 import {
   LayoutDashboard, Package, ShoppingBag, Users, Tag,
   BarChart3, Settings, LogOut, Layers, MessageSquare,
-  Gift, Percent, BookOpen, ArrowLeft
+  Gift, Percent, BookOpen, ArrowLeft, FolderOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -14,6 +14,7 @@ const navItems = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
   { href: '/admin/products', label: 'Products', icon: Package },
   { href: '/admin/categories', label: 'Categories', icon: Layers },
+  { href: '/admin/collections', label: 'Collections', icon: FolderOpen },
   { href: '/admin/orders', label: 'Orders', icon: ShoppingBag },
   { href: '/admin/customers', label: 'Customers', icon: Users },
   { href: '/admin/coupons', label: 'Coupons', icon: Percent },

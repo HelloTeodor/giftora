@@ -7,16 +7,17 @@ export const metadata: Metadata = { title: 'Customers | Admin' };
 
 export default async function AdminCustomersPage({
   searchParams,
-}: { searchParams: { q?: string; page?: string } }) {
-  const page = Number(searchParams.page) || 1;
+}: { searchParams: Promise<{ q?: string; page?: string }> }) {
+  const { q, page: pageParam } = await searchParams;
+  const page = Number(pageParam) || 1;
   const perPage = 25;
 
   const where: Record<string, unknown> = {
     role: 'CUSTOMER',
-    ...(searchParams.q && {
+    ...(q && {
       OR: [
-        { name: { contains: searchParams.q, mode: 'insensitive' } },
-        { email: { contains: searchParams.q, mode: 'insensitive' } },
+        { name: { contains: q, mode: 'insensitive' } },
+        { email: { contains: q, mode: 'insensitive' } },
       ],
     }),
   };

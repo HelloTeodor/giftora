@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import { Plus, Edit } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
+import { AdminBlogActions } from '@/components/admin/AdminBlogActions';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = { title: 'Blog | Admin' };
@@ -49,9 +50,12 @@ export default async function AdminBlogPage() {
                   </span>
                 </td>
                 <td className="px-5 py-4 text-right">
-                  <Link href={`/admin/blog/${post.id}/edit`} className="p-1.5 text-gray-400 hover:text-gold-600 inline-flex">
-                    <Edit size={15} />
-                  </Link>
+                  <div className="flex items-center justify-end gap-1">
+                    <Link href={`/admin/blog/${post.id}/edit`} className="p-1.5 text-gray-400 hover:text-gold-600 inline-flex">
+                      <Edit size={15} />
+                    </Link>
+                    <AdminBlogActions postId={post.id} />
+                  </div>
                 </td>
               </tr>
             ))}
