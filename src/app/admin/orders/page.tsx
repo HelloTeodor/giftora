@@ -2,7 +2,10 @@ import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import { formatDate, formatPrice, ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/lib/utils';
 import { AdminOrderStatusUpdater } from '@/components/admin/AdminOrderStatusUpdater';
+import { AdminDeleteOrderButton } from '@/components/admin/AdminDeleteOrderButton';
 import type { Metadata } from 'next';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = { title: 'Orders | Admin' };
 
@@ -101,9 +104,12 @@ export default async function AdminOrdersPage({
                     <AdminOrderStatusUpdater orderId={order.id} currentStatus={order.status} />
                   </td>
                   <td className="px-5 py-4 text-right">
-                    <Link href={`/admin/orders/${order.id}`} className="text-xs text-gold-600 hover:underline">
-                      View
-                    </Link>
+                    <div className="flex items-center justify-end gap-2">
+                      <Link href={`/admin/orders/${order.id}`} className="text-xs text-gold-600 hover:underline">
+                        View
+                      </Link>
+                      <AdminDeleteOrderButton orderId={order.id} orderNumber={order.orderNumber} />
+                    </div>
                   </td>
                 </tr>
               ))}
