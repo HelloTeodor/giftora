@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { SlidersHorizontal, X, ChevronDown, Grid2X2, List } from 'lucide-react';
 import { ProductCard } from './ProductCard';
@@ -36,7 +36,12 @@ export function ProductsClient({ initialData }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(false); // mobile-first default
+
+  // Open sidebar by default on tablet and desktop (≥768px)
+  useEffect(() => {
+    setFiltersOpen(window.innerWidth >= 768);
+  }, []);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const updateParam = useCallback((key: string, value: string | null) => {
