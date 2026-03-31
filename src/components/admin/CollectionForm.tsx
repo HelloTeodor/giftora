@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { Upload, Loader2, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface Product {
@@ -29,6 +30,8 @@ interface Props {
 export function CollectionForm({ products, initialData, collectionId }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState(initialData?.name || '');
   const [slug, setSlug] = useState(initialData?.slug || '');
@@ -40,6 +43,27 @@ export function CollectionForm({ products, initialData, collectionId }: Props) {
 
   function autoSlug(val: string) {
     return val.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      form.append('folder', 'giftora/collections');
+      const res = await fetch('/api/upload', { method: 'POST', body: form });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setImage(data.url);
+      toast.success('Image uploaded');
+    } catch {
+      toast.error('Image upload failed');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
   }
 
   function handleNameChange(val: string) {
@@ -120,14 +144,45 @@ export function CollectionForm({ products, initialData, collectionId }: Props) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
+          <div
+            onClick={() => !uploading && fileInputRef.current?.click()}
+            className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${
+              image ? 'border-gold-300 bg-gold-50' : 'border-gray-300 hover:border-gold-400'
+            } ${uploading ? 'cursor-wait' : ''}`}
+          >
+            {image ? (
+              <img src={image} alt="Collection" className="mx-auto h-32 object-cover rounded-lg" />
+            ) : (
+              <div className="space-y-2">
+                {uploading ? (
+                  <Loader2 className="w-8 h-8 animate-spin text-gold-500 mx-auto" />
+                ) : (
+                  <Upload className="w-8 h-8 text-gray-400 mx-auto" />
+                )}
+                <p className="text-sm text-gray-500">
+                  {uploading ? 'Uploading…' : 'Click to upload (JPEG, PNG, WebP)'}
+                </p>
+              </div>
+            )}
+          </div>
           <input
-            type="url"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400"
-            placeholder="https://..."
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className="hidden"
+            onChange={handleImageUpload}
+            disabled={uploading}
           />
+          {image && (
+            <button
+              type="button"
+              onClick={() => setImage('')}
+              className="mt-2 text-xs text-red-500 hover:underline flex items-center gap-1"
+            >
+              <X size={12} /> Remove image
+            </button>
+          )}
         </div>
 
         <div className="flex gap-6">
