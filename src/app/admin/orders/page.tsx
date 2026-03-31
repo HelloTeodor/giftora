@@ -43,7 +43,7 @@ export default async function AdminOrdersPage({
     prisma.order.count({ where }),
   ]);
 
-  const statuses = ['ALL', 'PENDING', 'PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
+  const statuses = ['ALL', 'PENDING', 'PAID', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'REFUNDED'];
 
   return (
     <div className="space-y-6">
