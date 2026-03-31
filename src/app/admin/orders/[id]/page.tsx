@@ -4,7 +4,7 @@ import { redirect, notFound } from 'next/navigation';
 import { isAdmin } from '@/lib/utils';
 import Link from 'next/link';
 import { formatDate, formatPrice } from '@/lib/utils';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, CreditCard, Truck, Package } from 'lucide-react';
 import { AdminOrderStatusUpdater } from '@/components/admin/AdminOrderStatusUpdater';
 import type { Metadata } from 'next';
 
@@ -48,15 +48,16 @@ export default async function AdminOrderDetailPage({ params }: Props) {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-4 gap-4">
         {[
           { label: 'Total', value: formatPrice(Number(order.total)) },
-          { label: 'Payment', value: order.paymentStatus },
-          { label: 'Items', value: order.items.length },
+          { label: 'Payment Status', value: order.paymentStatus },
+          { label: 'Order Status', value: order.status },
+          { label: 'Items', value: String(order.items.length) },
         ].map(({ label, value }) => (
           <div key={label} className="bg-white rounded-xl shadow-card p-5">
             <p className="text-xs text-gray-400 uppercase tracking-wide font-semibold">{label}</p>
-            <p className="text-xl font-bold text-navy-900 mt-1">{value}</p>
+            <p className="text-lg font-bold text-navy-900 mt-1">{value}</p>
           </div>
         ))}
       </div>
@@ -64,7 +65,9 @@ export default async function AdminOrderDetailPage({ params }: Props) {
       <div className="grid grid-cols-2 gap-6">
         {/* Customer */}
         <div className="bg-white rounded-xl shadow-card p-6">
-          <h2 className="font-semibold text-navy-900 mb-4">Customer</h2>
+          <h2 className="font-semibold text-navy-900 mb-4 flex items-center gap-2">
+            <Package size={16} className="text-gold-500" /> Customer
+          </h2>
           <p className="font-medium text-gray-900">{customerName}</p>
           <p className="text-sm text-gray-500">{customerEmail}</p>
           {order.user && (
@@ -72,21 +75,102 @@ export default async function AdminOrderDetailPage({ params }: Props) {
               View customer →
             </Link>
           )}
+          {!order.user && order.guestEmail && (
+            <p className="text-xs text-gray-400 mt-1">Guest checkout</p>
+          )}
         </div>
 
+        {/* Payment Details */}
+        <div className="bg-white rounded-xl shadow-card p-6">
+          <h2 className="font-semibold text-navy-900 mb-4 flex items-center gap-2">
+            <CreditCard size={16} className="text-gold-500" /> Payment Details
+          </h2>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-gray-500">Method</span>
+              <span className="font-medium text-gray-900">{order.paymentMethod || 'Stripe'}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Status</span>
+              <span className={`font-semibold ${order.paymentStatus === 'PAID' ? 'text-green-600' : order.paymentStatus === 'FAILED' ? 'text-red-500' : 'text-yellow-600'}`}>
+                {order.paymentStatus}
+              </span>
+            </div>
+            {order.paidAt && (
+              <div className="flex justify-between">
+                <span className="text-gray-500">Paid at</span>
+                <span className="text-gray-900">{formatDate(order.paidAt)}</span>
+              </div>
+            )}
+            {order.paymentIntentId && (
+              <div className="pt-2 border-t border-gray-100">
+                <p className="text-xs text-gray-400 mb-0.5">Stripe Payment ID</p>
+                <p className="font-mono text-xs text-gray-600 break-all">{order.paymentIntentId}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-6">
         {/* Shipping Address */}
         {order.shippingAddress && (
           <div className="bg-white rounded-xl shadow-card p-6">
-            <h2 className="font-semibold text-navy-900 mb-4">Shipping Address</h2>
+            <h2 className="font-semibold text-navy-900 mb-4 flex items-center gap-2">
+              <Truck size={16} className="text-gold-500" /> Delivery Address
+            </h2>
             <address className="not-italic text-sm text-gray-600 space-y-0.5">
               <p className="font-medium text-gray-900">{order.shippingAddress.firstName} {order.shippingAddress.lastName}</p>
+              {order.shippingAddress.company && <p className="text-gray-500">{order.shippingAddress.company}</p>}
               <p>{order.shippingAddress.addressLine1}</p>
               {order.shippingAddress.addressLine2 && <p>{order.shippingAddress.addressLine2}</p>}
-              <p>{order.shippingAddress.city}, {order.shippingAddress.postalCode}</p>
+              <p>{order.shippingAddress.city}{order.shippingAddress.state ? `, ${order.shippingAddress.state}` : ''} {order.shippingAddress.postalCode}</p>
               <p>{order.shippingAddress.country}</p>
+              {order.shippingAddress.phone && <p className="text-gray-500 mt-1">{order.shippingAddress.phone}</p>}
             </address>
           </div>
         )}
+
+        {/* Shipping Method */}
+        <div className="bg-white rounded-xl shadow-card p-6">
+          <h2 className="font-semibold text-navy-900 mb-4 flex items-center gap-2">
+            <Truck size={16} className="text-gold-500" /> Shipping
+          </h2>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-gray-500">Method</span>
+              <span className="font-medium text-gray-900">
+                {order.shippingMethod === 'STANDARD' ? 'Standard (3–5 days)' :
+                 order.shippingMethod === 'EXPRESS' ? 'Express (1–2 days)' :
+                 order.shippingMethod === 'OVERNIGHT' ? 'Next Day' :
+                 order.shippingMethod || '—'}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Shipping cost</span>
+              <span className="text-gray-900">
+                {Number(order.shippingCost) === 0 ? 'Free' : formatPrice(Number(order.shippingCost))}
+              </span>
+            </div>
+            {order.couponCode && (
+              <div className="flex justify-between text-green-600">
+                <span>Coupon ({order.couponCode})</span>
+                <span>-{formatPrice(Number(order.discountAmount))}</span>
+              </div>
+            )}
+            {order.trackingNumber && (
+              <div className="pt-2 border-t border-gray-100">
+                <p className="text-xs text-gray-400 mb-0.5">Tracking Number</p>
+                <p className="font-mono text-xs text-gray-600">{order.trackingNumber}</p>
+                {order.trackingUrl && (
+                  <a href={order.trackingUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-gold-600 hover:underline mt-1 inline-block">
+                    Track shipment →
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Order Items */}
@@ -153,21 +237,6 @@ export default async function AdminOrderDetailPage({ params }: Props) {
           </div>
         </div>
       </div>
-
-      {/* Tracking */}
-      {order.trackingNumber && (
-        <div className="bg-white rounded-xl shadow-card p-6">
-          <h2 className="font-semibold text-navy-900 mb-3">Tracking</h2>
-          <p className="text-sm text-gray-600">
-            Tracking number: <span className="font-mono font-medium text-gray-900">{order.trackingNumber}</span>
-          </p>
-          {order.trackingUrl && (
-            <a href={order.trackingUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-gold-600 hover:underline mt-1 inline-block">
-              Track shipment →
-            </a>
-          )}
-        </div>
-      )}
 
       {/* Notes */}
       {(order.customerNote || order.internalNote || order.giftMessage) && (

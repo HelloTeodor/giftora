@@ -19,25 +19,10 @@ export async function POST(req: NextRequest) {
   if (event.type === 'payment_intent.payment_failed') {
     const paymentIntent = event.data.object as Stripe.PaymentIntent;
     try {
-      // Find the order by paymentIntentId and mark as failed
-      const order = await prisma.order.findUnique({
+      await prisma.order.updateMany({
         where: { paymentIntentId: paymentIntent.id },
-        select: { id: true, orderNumber: true, guestEmail: true, userId: true },
+        data: { paymentStatus: 'FAILED', status: 'CANCELLED', cancelledAt: new Date() },
       });
-
-      if (order) {
-        await prisma.order.update({
-          where: { id: order.id },
-          data: { paymentStatus: 'FAILED', status: 'CANCELLED', cancelledAt: new Date() },
-        });
-        await prisma.orderStatusHistory.create({
-          data: {
-            orderId: order.id,
-            status: 'CANCELLED',
-            note: `Payment failed: ${paymentIntent.last_payment_error?.message ?? 'Unknown error'}`,
-          },
-        });
-      }
     } catch (err) {
       console.error('Payment failed handler error:', err);
     }
@@ -48,60 +33,46 @@ export async function POST(req: NextRequest) {
     const meta = session.metadata!;
 
     try {
-      // Create shipping address
-      let shippingAddressId: string | undefined;
-      if (meta.userId) {
-        const addr = await prisma.address.create({
-          data: {
-            userId: meta.userId,
-            firstName: meta.firstName,
-            lastName: meta.lastName,
-            addressLine1: meta.addressLine1,
-            addressLine2: meta.addressLine2 || null,
-            city: meta.city,
-            postalCode: meta.postalCode,
-            country: meta.country,
-            phone: meta.phone,
-          },
-        });
-        shippingAddressId = addr.id;
+      const orderId = meta.orderId;
+      if (!orderId) {
+        console.error('No orderId in Stripe metadata');
+        return NextResponse.json({ received: true });
       }
 
-      // Retrieve line items from Stripe
-      const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 100 });
-
-      // Create order
-      const order = await prisma.order.create({
+      // Update the pre-created order to PAID
+      const order = await prisma.order.update({
+        where: { id: orderId },
         data: {
-          orderNumber: meta.orderNumber,
-          userId: meta.userId || null,
-          guestEmail: !meta.userId ? session.customer_email : null,
           status: 'PAID',
           paymentStatus: 'PAID',
-          paymentMethod: 'STRIPE',
           paymentIntentId: session.payment_intent as string,
-          shippingAddressId,
-          shippingMethod: meta.shippingMethod as any,
-          subtotal: session.amount_subtotal! / 100,
-          shippingCost: 0,
-          taxAmount: 0,
-          total: session.amount_total! / 100,
-          giftMessage: meta.giftMessage || null,
+          // Use Stripe's actual charged amount (accounts for any promotion codes applied at Stripe)
+          total: (session.amount_total ?? 0) / 100,
           paidAt: new Date(),
-          items: {
-            create: lineItems.data
-              .filter(item => !item.description?.startsWith('Shipping'))
-              .map(item => ({
-                productName: item.description || 'Product',
-                sku: 'N/A',
-                price: (item.price?.unit_amount || 0) / 100,
-                quantity: item.quantity || 1,
-                total: (item.amount_total || 0) / 100,
-                productId: 'placeholder', // Will be resolved via product lookup
-              })),
-          },
+        },
+        include: {
+          items: true,
+          user: { select: { email: true, name: true } },
         },
       });
+
+      // Increment coupon usage if applicable
+      if (order.couponCode) {
+        await prisma.coupon.update({
+          where: { code: order.couponCode },
+          data: { usageCount: { increment: 1 } },
+        });
+      }
+
+      // Increment soldCount on products
+      for (const item of order.items) {
+        if (item.productId) {
+          await prisma.product.update({
+            where: { id: item.productId },
+            data: { soldCount: { increment: item.quantity } },
+          }).catch(() => {}); // Don't fail order if this errors
+        }
+      }
 
       // Add status history
       await prisma.orderStatusHistory.create({
@@ -109,24 +80,24 @@ export async function POST(req: NextRequest) {
       });
 
       // Send confirmation email
-      if (session.customer_email) {
+      const customerEmail = session.customer_email || order.user?.email;
+      if (customerEmail) {
         await sendOrderConfirmationEmail(
-          session.customer_email,
-          meta.orderNumber,
-          lineItems.data.map(item => ({
-            name: item.description || 'Product',
-            quantity: item.quantity || 1,
-            price: (item.price?.unit_amount || 0) / 100,
+          customerEmail,
+          order.orderNumber,
+          order.items.map(item => ({
+            name: item.productName,
+            quantity: item.quantity,
+            price: Number(item.price),
           })),
-          session.amount_total! / 100,
-          meta.firstName
+          Number(order.total),
+          order.user?.name || meta.userId ? '' : 'Customer'
         ).catch(console.error);
       }
     } catch (err) {
-      console.error('Order creation failed:', err);
+      console.error('Order update failed:', err);
     }
   }
 
   return NextResponse.json({ received: true });
 }
-

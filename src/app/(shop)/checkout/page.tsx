@@ -10,6 +10,7 @@ import { Shield, Truck, Lock, Tag, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useCartStore } from '@/store/cart';
 import { formatPrice } from '@/lib/utils';
+import { COUNTRIES } from '@/lib/countries';
 
 const getStripe = () => import('@stripe/stripe-js').then(m => m.loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!));
 
@@ -203,15 +204,9 @@ export default function CheckoutPage() {
                       <label className="block text-sm font-medium text-navy-700 mb-1.5">Country *</label>
                       <select {...register('country')} className="input-field">
                         <option value="">Select country</option>
-                        <option value="IE">Ireland</option>
-                        <option value="GB">United Kingdom</option>
-                        <option value="DE">Germany</option>
-                        <option value="FR">France</option>
-                        <option value="ES">Spain</option>
-                        <option value="IT">Italy</option>
-                        <option value="NL">Netherlands</option>
-                        <option value="US">United States</option>
-                        <option value="CA">Canada</option>
+                        {COUNTRIES.map(c => (
+                          <option key={c.code} value={c.code}>{c.name}</option>
+                        ))}
                       </select>
                       {errors.country && <p className="text-red-500 text-xs mt-1">{errors.country.message}</p>}
                     </div>
