@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { COUNTRIES } from '@/lib/countries';
 import { Plus, MapPin, Trash2, Check, Edit } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -142,11 +143,9 @@ export function AddressManager({ addresses }: { addresses: Address[] }) {
               <label className="block text-sm font-medium text-navy-700 mb-1.5">Country *</label>
               <select {...register('country')} className="input-field">
                 <option value="">Select country</option>
-                <option value="IE">Ireland</option>
-                <option value="GB">United Kingdom</option>
-                <option value="DE">Germany</option>
-                <option value="FR">France</option>
-                <option value="US">United States</option>
+                {COUNTRIES.map(c => (
+                  <option key={c.code} value={c.code}>{c.name}</option>
+                ))}
               </select>
             </div>
             <label className="flex items-center gap-2 cursor-pointer">
