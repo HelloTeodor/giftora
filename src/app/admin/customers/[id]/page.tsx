@@ -5,6 +5,7 @@ import { isAdmin } from '@/lib/utils';
 import Link from 'next/link';
 import { formatDate, formatPrice, ORDER_STATUS_LABELS, ORDER_STATUS_COLORS } from '@/lib/utils';
 import { ChevronLeft, Mail, Phone, MapPin, Heart, Star, ShoppingBag, Shield, Calendar, CheckCircle, XCircle } from 'lucide-react';
+import { AdminDeleteCustomerButton } from '@/components/admin/AdminDeleteCustomerButton';
 import type { Metadata } from 'next';
 
 interface Props { params: Promise<{ id: string }> }
@@ -72,6 +73,12 @@ export default async function AdminCustomerDetailPage({ params }: Props) {
           </div>
           <p className="text-gray-400 text-sm mt-1">Member since {formatDate(customer.createdAt)}</p>
         </div>
+        {!customer.deletedAt && (
+          <AdminDeleteCustomerButton
+            customerId={customer.id}
+            customerName={customer.name || customer.email}
+          />
+        )}
       </div>
 
       {/* Stats */}
