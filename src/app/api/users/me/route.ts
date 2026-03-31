@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { hardDeleteUser } from '@/lib/deleteUser';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -37,26 +38,7 @@ export async function DELETE(_req: NextRequest) {
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    // Soft-delete: set deletedAt, anonymise PII, but keep order history intact
-    await prisma.user.update({
-      where: { id: session.user.id },
-      data: {
-        deletedAt: new Date(),
-        email: `deleted_${session.user.id}@deleted.giftora`,
-        name: 'Deleted User',
-        firstName: null,
-        lastName: null,
-        phone: null,
-        avatar: null,
-        password: null,
-        newsletterOptIn: false,
-      },
-    });
-
-    // Remove auth sessions / accounts so they can't log back in
-    await prisma.account.deleteMany({ where: { userId: session.user.id } });
-    await prisma.session.deleteMany({ where: { userId: session.user.id } });
-
+    await hardDeleteUser(session.user.id);
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: 'Delete failed' }, { status: 500 });
