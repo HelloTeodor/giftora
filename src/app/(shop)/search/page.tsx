@@ -3,12 +3,16 @@ import { ProductCard } from '@/components/shop/ProductCard';
 import { Search } from 'lucide-react';
 import type { Metadata } from 'next';
 
-export function generateMetadata({ searchParams }: { searchParams: { q?: string } }): Metadata {
-  return { title: searchParams.q ? `Search: "${searchParams.q}"` : 'Search' };
+export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({ searchParams }: { searchParams: Promise<{ q?: string }> }): Promise<Metadata> {
+  const { q } = await searchParams;
+  return { title: q ? `Search: "${q}"` : 'Search' };
 }
 
-export default async function SearchPage({ searchParams }: { searchParams: { q?: string } }) {
-  const q = searchParams.q || '';
+export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+  const { q: rawQ } = await searchParams;
+  const q = rawQ || '';
 
   const products = q.length >= 2
     ? await prisma.product.findMany({
