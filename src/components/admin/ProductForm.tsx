@@ -43,6 +43,7 @@ export function ProductForm({ categories, product }: Props) {
     product?.images?.map(i => ({ url: i.url })) || []
   );
   const [uploading, setUploading] = useState(false);
+  const [imageUrlInput, setImageUrlInput] = useState('');
 
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -76,13 +77,27 @@ export function ProductForm({ categories, product }: Props) {
       formData.append('file', file);
       try {
         const res = await fetch('/api/upload', { method: 'POST', body: formData });
-        const { url } = await res.json();
-        setImages(prev => [...prev, { url }]);
+        const json = await res.json();
+        if (!res.ok || !json.url) {
+          toast.error('Upload failed — paste an image URL below instead');
+          continue;
+        }
+        setImages(prev => [...prev, { url: json.url }]);
       } catch {
-        toast.error('Failed to upload image');
+        toast.error('Upload failed — paste an image URL below instead');
       }
     }
     setUploading(false);
+    // Reset file input so the same file can be re-selected
+    e.target.value = '';
+  };
+
+  const handleAddImageUrl = () => {
+    const url = imageUrlInput.trim();
+    if (!url) return;
+    try { new URL(url); } catch { toast.error('Invalid URL'); return; }
+    setImages(prev => [...prev, { url }]);
+    setImageUrlInput('');
   };
 
   const onSubmit = async (data: FormData) => {
@@ -187,7 +202,25 @@ export function ProductForm({ categories, product }: Props) {
             </label>
           </div>
           {uploading && <p className="text-sm text-gold-600">Uploading…</p>}
-          <p className="text-xs text-gray-400">First image will be the primary image. Supported: JPG, PNG, WebP</p>
+          <div className="flex gap-2 mt-3">
+            <input
+              type="url"
+              value={imageUrlInput}
+              onChange={e => setImageUrlInput(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddImageUrl())}
+              placeholder="Or paste an image URL (https://...)"
+              className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400"
+            />
+            <button
+              type="button"
+              onClick={handleAddImageUrl}
+              disabled={!imageUrlInput.trim()}
+              className="px-3 py-2 bg-navy-950 text-white text-sm font-medium rounded-lg hover:bg-navy-800 transition-colors disabled:opacity-40"
+            >
+              Add
+            </button>
+          </div>
+          <p className="text-xs text-gray-400 mt-2">Upload a file or paste an image URL. First image is the primary.</p>
         </div>
 
         {/* SEO */}
