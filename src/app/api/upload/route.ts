@@ -18,7 +18,8 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(bytes);
     const base64 = `data:${file.type};base64,${buffer.toString('base64')}`;
 
-    const result = await uploadImage(base64, 'giftora/products');
+    const folder = (formData.get('folder') as string) || 'giftora/products';
+    const result = await uploadImage(base64, folder);
 
     return NextResponse.json({ url: result.url, publicId: result.publicId });
   } catch {
