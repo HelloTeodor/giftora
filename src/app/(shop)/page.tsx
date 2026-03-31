@@ -1,5 +1,7 @@
 import { Suspense } from 'react';
 import { prisma } from '@/lib/prisma';
+
+export const dynamic = 'force-dynamic';
 import { HeroSection } from '@/components/home/HeroSection';
 import { CategoriesGrid } from '@/components/home/CategoriesGrid';
 import { FeaturedProducts } from '@/components/home/FeaturedProducts';

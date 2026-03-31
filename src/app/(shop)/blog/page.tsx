@@ -5,6 +5,8 @@ import { formatDate } from '@/lib/utils';
 import { BookOpen } from 'lucide-react';
 import type { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Blog — Gifting Ideas & Inspiration',
   description: 'Gifting guides, ideas, and inspiration from the Giftora team.',

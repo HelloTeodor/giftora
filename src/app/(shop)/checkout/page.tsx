@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Shield, Truck, Lock } from 'lucide-react';
+import { Shield, Truck, Lock, Tag, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useCartStore } from '@/store/cart';
 import { formatPrice } from '@/lib/utils';
@@ -41,6 +41,9 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { items, getTotalPrice, clearCart } = useCartStore();
   const [loading, setLoading] = useState(false);
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; type: string; value: number } | null>(null);
+  const [couponLoading, setCouponLoading] = useState(false);
 
   const { register, handleSubmit, watch, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -57,7 +60,38 @@ export default function CheckoutPage() {
   const selectedShipping = SHIPPING_OPTIONS.find(o => o.id === shippingMethod)!;
   const subtotal = getTotalPrice();
   const shippingCost = shippingMethod === 'STANDARD' && subtotal >= 75 ? 0 : selectedShipping.price;
-  const total = subtotal + shippingCost;
+
+  const discountAmount = appliedCoupon
+    ? appliedCoupon.type === 'PERCENTAGE'
+      ? Math.round((subtotal * appliedCoupon.value / 100) * 100) / 100
+      : appliedCoupon.type === 'FIXED'
+      ? Math.min(appliedCoupon.value, subtotal)
+      : appliedCoupon.type === 'FREE_SHIPPING'
+      ? shippingCost
+      : 0
+    : 0;
+
+  const total = subtotal + shippingCost - discountAmount;
+
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setCouponLoading(true);
+    try {
+      const res = await fetch('/api/coupons/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: couponCode.trim(), orderAmount: subtotal }),
+      });
+      const data = await res.json();
+      if (!res.ok) { toast.error(data.error || 'Invalid coupon'); return; }
+      setAppliedCoupon(data);
+      toast.success(`Coupon "${data.code}" applied!`);
+    } catch {
+      toast.error('Failed to validate coupon');
+    } finally {
+      setCouponLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (items.length === 0) router.push('/cart');
@@ -73,6 +107,8 @@ export default function CheckoutPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...data,
+          couponCode: appliedCoupon?.code || null,
+          discountAmount: discountAmount || 0,
           items: items.map(i => ({
             productId: i.productId,
             variantId: i.variantId,
@@ -241,15 +277,62 @@ export default function CheckoutPage() {
                       );
                     })}
                   </div>
-                  <div className="border-t border-cream-100 pt-4 space-y-2">
+                  {/* Coupon code */}
+                  <div className="border-t border-cream-100 pt-4">
+                    {appliedCoupon ? (
+                      <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-xl px-3 py-2 mb-3">
+                        <div className="flex items-center gap-2 text-green-700 text-sm">
+                          <Tag size={14} />
+                          <span className="font-mono font-bold">{appliedCoupon.code}</span>
+                          <span className="text-green-600">
+                            {appliedCoupon.type === 'PERCENTAGE' ? `${appliedCoupon.value}% off` :
+                             appliedCoupon.type === 'FREE_SHIPPING' ? 'Free shipping' :
+                             `€${appliedCoupon.value} off`}
+                          </span>
+                        </div>
+                        <button onClick={() => { setAppliedCoupon(null); setCouponCode(''); }} className="text-green-500 hover:text-green-700">
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2 mb-3">
+                        <input
+                          type="text"
+                          value={couponCode}
+                          onChange={e => setCouponCode(e.target.value.toUpperCase())}
+                          onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), applyCoupon())}
+                          placeholder="Coupon code"
+                          className="flex-1 border border-cream-200 rounded-xl px-3 py-2 text-sm font-mono uppercase focus:outline-none focus:ring-2 focus:ring-gold-400"
+                        />
+                        <button
+                          type="button"
+                          onClick={applyCoupon}
+                          disabled={couponLoading || !couponCode.trim()}
+                          className="px-4 py-2 bg-navy-950 text-white text-sm font-semibold rounded-xl hover:bg-navy-800 transition-colors disabled:opacity-50"
+                        >
+                          {couponLoading ? '…' : 'Apply'}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-cream-600">Subtotal</span>
                       <span>{formatPrice(subtotal)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-cream-600">Shipping</span>
-                      <span className={shippingCost === 0 ? 'text-green-600' : ''}>{shippingCost === 0 ? 'FREE' : formatPrice(shippingCost)}</span>
+                      <span className={shippingCost === 0 || (appliedCoupon?.type === 'FREE_SHIPPING') ? 'text-green-600' : ''}>
+                        {shippingCost === 0 || appliedCoupon?.type === 'FREE_SHIPPING' ? 'FREE' : formatPrice(shippingCost)}
+                      </span>
                     </div>
+                    {discountAmount > 0 && (
+                      <div className="flex justify-between text-sm text-green-600">
+                        <span>Discount ({appliedCoupon?.code})</span>
+                        <span>-{formatPrice(discountAmount)}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between font-bold text-lg pt-2 border-t border-cream-100">
                       <span>Total</span>
                       <span>{formatPrice(total)}</span>

@@ -4,6 +4,8 @@ import { ProductDetail } from '@/components/shop/ProductDetail';
 import { ProductCard } from '@/components/shop/ProductCard';
 import type { Metadata } from 'next';
 
+export const dynamic = 'force-dynamic';
+
 interface Props { params: Promise<{ slug: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
