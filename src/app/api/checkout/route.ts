@@ -47,10 +47,9 @@ export async function POST(req: NextRequest) {
     });
 
     const shippingCost =
-      shippingMethod === 'STANDARD' && subtotal >= 75 ? 0
-      : shippingMethod === 'EXPRESS' ? 9.99
+      shippingMethod === 'EXPRESS' ? 9.99
       : shippingMethod === 'OVERNIGHT' ? 14.99
-      : 4.99;
+      : 0; // STANDARD is always free
 
     if (shippingCost > 0) {
       lineItems.push({
