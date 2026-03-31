@@ -52,6 +52,11 @@ export function ProductsClient({ initialData }: Props) {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Default to list view on mobile, grid on tablet/desktop
+  useEffect(() => {
+    setViewMode(window.innerWidth < 768 ? 'list' : 'grid');
+  }, []);
+
   // Prevent body scroll when mobile drawer is open
   useEffect(() => {
     if (isMobile && filtersOpen) {
