@@ -40,12 +40,31 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const { id } = await params;
 
   try {
-    await prisma.product.update({
-      where: { id },
-      data: { status: 'ARCHIVED' },
-    });
+    const product = await prisma.product.findUnique({ where: { id }, select: { status: true } });
+    if (!product) return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+
+    if (product.status === 'ARCHIVED') {
+      // Check if product has order history — can't permanently delete if so
+      const orderCount = await prisma.orderItem.count({ where: { productId: id } });
+      if (orderCount > 0) {
+        return NextResponse.json(
+          { error: `Cannot permanently delete — this product appears in ${orderCount} order(s). Keep it archived to preserve order history.` },
+          { status: 409 }
+        );
+      }
+      // No orders — safe to hard delete
+      await prisma.wishlistItem.deleteMany({ where: { productId: id } });
+      await prisma.cartItem.deleteMany({ where: { productId: id } });
+      await prisma.review.deleteMany({ where: { productId: id } });
+      await prisma.product.delete({ where: { id } });
+    } else {
+      // Soft delete — move to ARCHIVED
+      await prisma.product.update({ where: { id }, data: { status: 'ARCHIVED' } });
+    }
+
     return NextResponse.json({ success: true });
-  } catch {
+  } catch (err) {
+    console.error('Product delete error:', err);
     return NextResponse.json({ error: 'Delete failed' }, { status: 500 });
   }
 }

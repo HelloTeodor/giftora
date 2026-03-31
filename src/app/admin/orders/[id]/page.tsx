@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { formatDate, formatPrice } from '@/lib/utils';
 import { ChevronLeft, CreditCard, Truck, Package } from 'lucide-react';
 import { AdminOrderStatusUpdater } from '@/components/admin/AdminOrderStatusUpdater';
+import { AdminDeleteOrderButton } from '@/components/admin/AdminDeleteOrderButton';
 import type { Metadata } from 'next';
 
 interface Props { params: Promise<{ id: string }> }
@@ -43,8 +44,9 @@ export default async function AdminOrderDetailPage({ params }: Props) {
           <h1 className="text-2xl font-bold text-navy-900">Order #{order.orderNumber}</h1>
           <p className="text-gray-500 text-sm mt-0.5">{formatDate(order.createdAt)}</p>
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-3">
           <AdminOrderStatusUpdater orderId={order.id} currentStatus={order.status} />
+          <AdminDeleteOrderButton orderId={order.id} orderNumber={order.orderNumber} redirectAfter />
         </div>
       </div>
 

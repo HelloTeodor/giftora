@@ -1,29 +1,31 @@
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Plus, Search, Edit, Trash2, Package } from 'lucide-react';
+import { Plus, Search, Edit, Package } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { AdminProductActions } from '@/components/admin/AdminProductActions';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = { title: 'Products | Admin' };
+export const dynamic = 'force-dynamic';
 
 export default async function AdminProductsPage({
   searchParams,
 }: {
-  searchParams: { q?: string; status?: string; page?: string };
+  searchParams: Promise<{ q?: string; status?: string; page?: string }>;
 }) {
-  const page = Number(searchParams.page) || 1;
+  const { q, status: statusParam, page: pageParam } = await searchParams;
+  const page = Number(pageParam) || 1;
   const perPage = 20;
 
   const where: Record<string, unknown> = {
-    ...(searchParams.q && {
+    ...(q && {
       OR: [
-        { name: { contains: searchParams.q, mode: 'insensitive' } },
-        { sku: { contains: searchParams.q, mode: 'insensitive' } },
+        { name: { contains: q, mode: 'insensitive' } },
+        { sku: { contains: q, mode: 'insensitive' } },
       ],
     }),
-    ...(searchParams.status && searchParams.status !== 'ALL' && { status: searchParams.status }),
+    ...(statusParam && statusParam !== 'ALL' && { status: statusParam }),
   };
 
   const [products, total] = await Promise.all([
@@ -42,6 +44,7 @@ export default async function AdminProductsPage({
   ]);
 
   const totalPages = Math.ceil(total / perPage);
+  const activeFilter = statusParam || 'ALL';
 
   return (
     <div className="space-y-6">
@@ -49,7 +52,7 @@ export default async function AdminProductsPage({
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-serif text-3xl font-bold text-gray-900">Products</h1>
-          <p className="text-gray-500 text-sm mt-1">{total} total products</p>
+          <p className="text-gray-500 text-sm mt-1">{total} {activeFilter !== 'ALL' ? activeFilter.toLowerCase() : 'total'} products</p>
         </div>
         <Link href="/admin/products/new" className="flex items-center gap-2 bg-gold-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-gold-600 transition-colors shadow-gold">
           <Plus size={16} /> Add Product
@@ -58,22 +61,25 @@ export default async function AdminProductsPage({
 
       {/* Filters */}
       <div className="bg-white rounded-2xl p-4 shadow-card flex flex-wrap gap-3 items-center">
-        <form className="relative flex-1 min-w-48">
+        <form method="GET" className="relative flex-1 min-w-48">
           <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             name="q"
-            defaultValue={searchParams.q}
+            defaultValue={q}
             placeholder="Search products, SKUs..."
             className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-400"
           />
+          {statusParam && statusParam !== 'ALL' && (
+            <input type="hidden" name="status" value={statusParam} />
+          )}
         </form>
         <div className="flex gap-2">
           {['ALL', 'ACTIVE', 'DRAFT', 'ARCHIVED'].map(s => (
             <Link
               key={s}
-              href={`/admin/products?status=${s}`}
+              href={`/admin/products?status=${s}${q ? `&q=${q}` : ''}`}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                (searchParams.status || 'ALL') === s
+                activeFilter === s
                   ? 'bg-navy-950 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
@@ -100,6 +106,13 @@ export default async function AdminProductsPage({
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
+              {products.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="px-5 py-12 text-center text-gray-400 text-sm">
+                    No products found
+                  </td>
+                </tr>
+              )}
               {products.map(product => (
                 <tr key={product.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-5 py-4">
@@ -148,7 +161,7 @@ export default async function AdminProductsPage({
                       <Link href={`/admin/products/${product.id}/edit`} className="p-1.5 text-gray-400 hover:text-gold-600 hover:bg-gold-50 rounded-lg transition-all">
                         <Edit size={15} />
                       </Link>
-                      <AdminProductActions productId={product.id} />
+                      <AdminProductActions productId={product.id} productStatus={product.status} />
                     </div>
                   </td>
                 </tr>
@@ -163,7 +176,7 @@ export default async function AdminProductsPage({
             {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
               <Link
                 key={p}
-                href={`/admin/products?page=${p}${searchParams.q ? `&q=${searchParams.q}` : ''}`}
+                href={`/admin/products?page=${p}${q ? `&q=${q}` : ''}${statusParam ? `&status=${statusParam}` : ''}`}
                 className={`w-9 h-9 rounded-lg text-sm font-medium flex items-center justify-center transition-all ${
                   page === p ? 'bg-navy-950 text-white' : 'border border-gray-200 text-gray-600 hover:border-gold-400'
                 }`}
