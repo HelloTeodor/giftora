@@ -6,7 +6,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
-import { Upload, Loader2, X } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
+import { ImageUpload } from './ImageUpload';
 
 const schema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -42,8 +43,7 @@ interface Props {
 export function BlogPostForm({ post, authorName }: Props) {
   const router = useRouter();
   const isEditing = !!post;
-  const [image, setImage] = useState<string | null>(post?.image ?? null);
-  const [uploading, setUploading] = useState(false);
+  const [image, setImage] = useState<string>(post?.image ?? '');
   const [tags, setTags] = useState<string[]>(post?.tags ?? []);
   const [tagInput, setTagInput] = useState('');
 
@@ -77,25 +77,6 @@ export function BlogPostForm({ post, authorName }: Props) {
 
   function removeTag(tag: string) {
     setTags(tags.filter((t) => t !== tag));
-  }
-
-  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    try {
-      const form = new FormData();
-      form.append('file', file);
-      const res = await fetch('/api/upload', { method: 'POST', body: form });
-      const data = await res.json();
-      if (!res.ok || !data.url) throw new Error(data.error || 'No URL returned');
-      setImage(data.url);
-      toast.success('Image uploaded');
-    } catch {
-      toast.error('Upload failed — paste an image URL below instead');
-    } finally {
-      setUploading(false);
-    }
   }
 
   async function onSubmit(data: FormData) {
@@ -190,52 +171,12 @@ export function BlogPostForm({ post, authorName }: Props) {
           {/* Featured Image */}
           <div className="bg-white rounded-xl shadow-card p-6">
             <h2 className="text-lg font-semibold text-navy-900 mb-4">Featured Image</h2>
-            <label className="block cursor-pointer">
-              <div className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors ${image ? 'border-gold-300' : 'border-gray-300 hover:border-gold-400'}`}>
-                {image ? (
-                  <img src={image} alt="Cover" className="w-full h-32 object-cover rounded-lg" />
-                ) : (
-                  <div className="space-y-1">
-                    {uploading ? (
-                      <Loader2 className="w-6 h-6 animate-spin text-gold-500 mx-auto" />
-                    ) : (
-                      <Upload className="w-6 h-6 text-gray-400 mx-auto" />
-                    )}
-                    <p className="text-xs text-gray-400">{uploading ? 'Uploading…' : 'Upload cover image'}</p>
-                  </div>
-                )}
-              </div>
-              <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploading} />
-            </label>
-            <div className="flex gap-2 mt-3">
-              <input
-                type="url"
-                placeholder="Or paste an image URL (https://...)"
-                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold-400"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    const val = (e.target as HTMLInputElement).value.trim();
-                    if (val) { try { new URL(val); setImage(val); (e.target as HTMLInputElement).value = ''; } catch { toast.error('Invalid URL'); } }
-                  }
-                }}
-              />
-              <button
-                type="button"
-                onClick={(e) => {
-                  const input = (e.currentTarget.previousElementSibling as HTMLInputElement);
-                  const val = input.value.trim();
-                  if (!val) return;
-                  try { new URL(val); setImage(val); input.value = ''; } catch { toast.error('Invalid URL'); }
-                }}
-                className="px-3 py-2 bg-navy-950 text-white text-sm font-medium rounded-lg hover:bg-navy-800 transition-colors"
-              >Add</button>
-            </div>
-            {image && (
-              <button type="button" onClick={() => setImage(null)} className="mt-2 text-xs text-red-500 hover:underline">
-                Remove image
-              </button>
-            )}
+            <ImageUpload
+              value={image}
+              onChange={setImage}
+              folder="giftora/blog"
+              label="Cover Image"
+            />
           </div>
 
           {/* Tags */}
