@@ -12,10 +12,12 @@ async function getDashboardData() {
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
   const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
   const [
     totalRevenue, lastMonthRevenue, totalOrders, pendingOrders,
-    totalCustomers, totalProducts, lowStockProducts, recentOrders
+    totalCustomers, totalProducts, lowStockProducts, recentOrders,
+    paidOrdersLast30d,
   ] = await Promise.all([
     prisma.order.aggregate({ where: { paymentStatus: 'PAID' }, _sum: { total: true } }),
     prisma.order.aggregate({ where: { paymentStatus: 'PAID', createdAt: { gte: startOfLastMonth, lte: endOfLastMonth } }, _sum: { total: true } }),
@@ -34,7 +36,26 @@ async function getDashboardData() {
       orderBy: { createdAt: 'desc' },
       include: { items: { take: 1 } },
     }),
+    prisma.order.findMany({
+      where: { paymentStatus: 'PAID', createdAt: { gte: thirtyDaysAgo } },
+      select: { createdAt: true, total: true },
+      orderBy: { createdAt: 'asc' },
+    }),
   ]);
+
+  // Build daily chart data for the last 30 days
+  const dailyMap: Record<string, number> = {};
+  paidOrdersLast30d.forEach(o => {
+    const key = o.createdAt.toISOString().split('T')[0];
+    dailyMap[key] = (dailyMap[key] || 0) + Number(o.total);
+  });
+  const chartData = Array.from({ length: 30 }, (_, i) => {
+    const d = new Date(now);
+    d.setDate(d.getDate() - (29 - i));
+    const key = d.toISOString().split('T')[0];
+    const label = d.toLocaleDateString('en', { month: 'short', day: 'numeric' });
+    return { label, revenue: Math.round((dailyMap[key] || 0) * 100) / 100 };
+  });
 
   return {
     totalRevenue: Number(totalRevenue._sum.total || 0),
@@ -45,6 +66,7 @@ async function getDashboardData() {
     totalProducts,
     lowStockProducts,
     recentOrders,
+    chartData,
   };
 }
 
@@ -59,6 +81,7 @@ const ORDER_STATUS_COLORS: Record<string, string> = {
 
 export default async function AdminDashboardPage() {
   const data = await getDashboardData();
+  const { chartData } = data;
 
   const stats = [
     {
@@ -126,7 +149,7 @@ export default async function AdminDashboardPage() {
             <h2 className="font-serif text-xl font-bold text-gray-900">Revenue Overview</h2>
             <Link href="/admin/analytics" className="text-sm text-gold-600 hover:underline">Full report →</Link>
           </div>
-          <AdminRevenueChart />
+          <AdminRevenueChart data={chartData} />
         </div>
 
         {/* Low Stock Alert */}
