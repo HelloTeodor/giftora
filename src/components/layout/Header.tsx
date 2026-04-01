@@ -81,8 +81,6 @@ export function Header() {
               <span className="mx-6 text-navy-500">·</span>
               <span className="tracking-[0.12em] font-medium">Use code <span className="font-bold text-gold-400 tracking-widest">WELCOME10</span> for 10% off your first order</span>
               <span className="mx-6 text-navy-500">·</span>
-              <span className="tracking-[0.12em] font-medium">Find the perfect gift for your loved ones</span>
-              <span className="mx-6 text-navy-500">·</span>
               <span className="tracking-[0.12em] font-medium">Gifts made with love</span>
             </span>
           ))}
