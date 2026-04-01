@@ -12,14 +12,14 @@ interface Category {
 }
 
 const categoryImages: Record<string, string> = {
-  'new-hire': 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400',
-  'christmas': 'https://images.unsplash.com/photo-1512909006721-3d6018887383?w=400',
-  'birthday': 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400',
-  'newborn': 'https://images.unsplash.com/photo-1522771930-78848d9293e8?w=400',
-  'valentines': 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
-  'easter': 'https://images.unsplash.com/photo-1615460549969-36fa19521a4f?w=400',
-  'self-care': 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=400',
-  'corporate': 'https://images.unsplash.com/photo-1520006403909-838d6b92c22e?w=400',
+  'new-hire': 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?w=400&auto=format&fit=crop',
+  'christmas': 'https://images.unsplash.com/photo-1512909006721-3d6018887383?w=400&auto=format&fit=crop',
+  'birthday': 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400&auto=format&fit=crop',
+  'newborn': 'https://images.unsplash.com/photo-1522771930-78848d9293e8?w=400&auto=format&fit=crop',
+  'valentines': 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&auto=format&fit=crop',
+  'easter': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&auto=format&fit=crop',
+  'self-care': 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=400&auto=format&fit=crop',
+  'corporate': 'https://images.unsplash.com/photo-1497700003451-e1df943a194b?w=400&auto=format&fit=crop',
 };
 
 export function CategoriesGrid({ categories }: { categories: Category[] }) {

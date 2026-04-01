@@ -68,8 +68,8 @@ export function HeroSection() {
               {/* Main image */}
               <div className="absolute top-0 right-0 w-72 h-80 rounded-2xl overflow-hidden shadow-2xl">
                 <Image
-                  src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600"
-                  alt="Premium gift box"
+                  src="https://images.unsplash.com/photo-1497700003451-e1df943a194b?w=600&auto=format&fit=crop"
+                  alt="Beautiful gift arrangement"
                   fill
                   className="object-cover"
                   priority
@@ -78,8 +78,8 @@ export function HeroSection() {
               {/* Secondary image */}
               <div className="absolute bottom-0 left-0 w-64 h-72 rounded-2xl overflow-hidden shadow-2xl">
                 <Image
-                  src="https://images.unsplash.com/photo-1512909006721-3d6018887383?w=600"
-                  alt="Christmas gift box"
+                  src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=600&auto=format&fit=crop"
+                  alt="Premium gift box"
                   fill
                   className="object-cover"
                 />
@@ -118,7 +118,7 @@ export function HeroSection() {
       {/* Bottom wave */}
       <div className="absolute bottom-0 left-0 right-0">
         <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-          <path d="M0 60L48 51.5C96 43 192 26 288 22.2C384 18.3 480 27.7 576 35.2C672 42.7 768 48.3 864 46.8C960 45.3 1056 36.7 1152 31.5C1248 26.3 1344 24.7 1392 23.8L1440 23V60H1392C1344 60 1248 60 1152 60C1056 60 960 60 864 60C768 60 672 60 576 60C480 60 384 60 288 60C192 60 96 60 48 60H0Z" fill="#FEFCF7"/>
+          <path d="M0 60L48 51.5C96 43 192 26 288 22.2C384 18.3 480 27.7 576 35.2C672 42.7 768 48.3 864 46.8C960 45.3 1056 36.7 1152 31.5C1248 26.3 1344 24.7 1392 23.8L1440 23V60H1392C1344 60 1248 60 1152 60C1056 60 960 60 864 60C768 60 672 60 576 60C480 60 384 60 288 60C192 60 96 60 48 60H0Z" fill="#FEFAE0"/>
         </svg>
       </div>
     </section>

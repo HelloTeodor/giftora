@@ -6,25 +6,25 @@
 
 @layer base {
   :root {
-    --background: 42 30% 97%;
-    --foreground: 35 20% 12%;
+    --background: 52 97% 94%;
+    --foreground: 95 16% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 35 20% 12%;
+    --card-foreground: 95 16% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 35 20% 12%;
-    --primary: 20 55% 52%;
-    --primary-foreground: 42 30% 97%;
-    --secondary: 40 12% 25%;
-    --secondary-foreground: 42 30% 97%;
-    --muted: 38 22% 92%;
-    --muted-foreground: 28 15% 50%;
-    --accent: 38 22% 92%;
-    --accent-foreground: 35 20% 12%;
+    --popover-foreground: 95 16% 12%;
+    --primary: 28 50% 64%;
+    --primary-foreground: 52 97% 94%;
+    --secondary: 68 28% 80%;
+    --secondary-foreground: 95 16% 12%;
+    --muted: 68 34% 85%;
+    --muted-foreground: 79 18% 48%;
+    --accent: 68 34% 85%;
+    --accent-foreground: 95 16% 12%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 36 22% 86%;
-    --input: 36 22% 86%;
-    --ring: 20 55% 52%;
+    --border: 68 28% 80%;
+    --input: 68 28% 80%;
+    --ring: 28 50% 64%;
     --radius: 0.5rem;
   }
 
@@ -57,7 +57,7 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    background-color: #FEFCF7;
+    background-color: #FEFAE0;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif;
@@ -162,7 +162,7 @@
   }
 
   .animate-shimmer {
-    background: linear-gradient(90deg, #F2E4CF 25%, #E8D9C0 50%, #F2E4CF 75%);
+    background: linear-gradient(90deg, #E9EDC9 25%, #CCD5AE 50%, #E9EDC9 75%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
   }
