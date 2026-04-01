@@ -49,7 +49,7 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-4 lg:col-span-2">
             <Link href="/" className="block mb-4">
-              <span className="font-serif text-2xl font-bold tracking-[0.04em] text-white">Radu <span className="text-gold-500">&amp;</span> Co</span>
+              <span className="font-playfair text-2xl font-bold tracking-[0.04em] text-white">Radu <span className="text-gold-500">&amp;</span> Co</span>
               <span className="block text-[10px] italic text-navy-400 font-light tracking-wide mt-0.5">Thoughtful Gifts &amp; Living</span>
             </Link>
             <p className="text-navy-300 text-sm leading-relaxed mb-6 max-w-xs">
