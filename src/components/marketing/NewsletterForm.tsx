@@ -55,8 +55,8 @@ export function NewsletterForm({ dark = false }: { dark?: boolean }) {
           className={cn(
             'w-full pl-9 pr-4 py-3 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gold-500 transition-all',
             dark
-              ? 'bg-navy-800 text-white placeholder:text-cream-500 border border-navy-700'
-              : 'bg-white text-navy-950 placeholder:text-cream-400 border border-cream-200'
+              ? 'bg-navy-800 text-white placeholder:text-navy-400 border border-navy-700'
+              : 'bg-white text-navy-950 placeholder:text-cream-500 border border-cream-200'
           )}
         />
       </div>

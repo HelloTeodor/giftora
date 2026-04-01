@@ -3,10 +3,11 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import {
   ShoppingBag, Search, Heart, User, Menu, X, ChevronDown,
-  Package, LogOut, Settings, LayoutDashboard, Bell
+  Package, LogOut, Settings, LayoutDashboard,
 } from 'lucide-react';
 import { useCartStore } from '@/store/cart';
 import { cn, isAdmin } from '@/lib/utils';
@@ -18,34 +19,35 @@ const navLinks = [
     label: 'Occasions',
     href: '/categories',
     children: [
-      { label: 'New Hire', href: '/categories/new-hire', icon: '🎉' },
-      { label: 'Christmas', href: '/categories/christmas', icon: '🎄' },
-      { label: 'Birthday', href: '/categories/birthday', icon: '🎂' },
-      { label: 'Newborn', href: '/categories/newborn', icon: '👶' },
-      { label: "Valentine's Day", href: '/categories/valentines', icon: '❤️' },
-      { label: 'Easter', href: '/categories/easter', icon: '🐣' },
-      { label: 'Self Care', href: '/categories/self-care', icon: '🌸' },
-      { label: 'Corporate', href: '/categories/corporate', icon: '💼' },
+      { label: 'New Hire',       href: '/categories/new-hire',   icon: '🎉' },
+      { label: 'Christmas',      href: '/categories/christmas',  icon: '🎄' },
+      { label: 'Birthday',       href: '/categories/birthday',   icon: '🎂' },
+      { label: 'Newborn',        href: '/categories/newborn',    icon: '👶' },
+      { label: "Valentine's Day",href: '/categories/valentines', icon: '❤️' },
+      { label: 'Easter',         href: '/categories/easter',     icon: '🐣' },
+      { label: 'Self Care',      href: '/categories/self-care',  icon: '🌸' },
+      { label: 'Corporate',      href: '/categories/corporate',  icon: '💼' },
     ],
   },
   { label: 'Collections', href: '/collections' },
-  { label: 'About', href: '/about' },
-  { label: 'Blog', href: '/blog' },
+  { label: 'About',       href: '/about' },
+  { label: 'Blog',        href: '/blog' },
 ];
 
 export function Header() {
   const { data: session } = useSession();
-  const { getTotalItems, openCart, isOpen } = useCartStore();
-  const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const { getTotalItems, openCart } = useCartStore();
+  const [scrolled,         setScrolled]         = useState(false);
+  const [mobileOpen,       setMobileOpen]       = useState(false);
+  const [activeDropdown,   setActiveDropdown]   = useState<string | null>(null);
+  const [searchOpen,       setSearchOpen]       = useState(false);
+  const [searchQuery,      setSearchQuery]      = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const totalItems = getTotalItems();
+  const router      = useRef<ReturnType<typeof useRouter> | null>(null);
+  const totalItems  = getTotalItems();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -71,146 +73,84 @@ export function Header() {
   return (
     <>
       {/* Announcement bar */}
-      <div className="bg-navy-950 text-cream-300 text-xs text-center py-2.5 px-4 tracking-[0.14em] uppercase font-medium">
-        Free shipping on orders over €75 &nbsp;·&nbsp; Use code <span className="font-bold text-gold-300 tracking-widest">WELCOME10</span> for 10% off your first order
+      <div className="bg-navy-950 text-white text-xs text-center py-2 px-4 tracking-[0.12em] font-medium">
+        Free shipping on orders over €75 &nbsp;·&nbsp; Use code{' '}
+        <span className="font-bold text-gold-400 tracking-widest">WELCOME10</span>{' '}
+        for 10% off your first order
       </div>
 
       <header
         className={cn(
-          'sticky top-0 z-50 transition-all duration-300 border-b',
-          scrolled
-            ? 'bg-white/95 backdrop-blur-md shadow-sm border-cream-200'
-            : 'bg-white border-cream-200'
+          'sticky top-0 z-50 bg-white transition-all duration-300',
+          scrolled ? 'shadow-sm' : 'shadow-none',
         )}
       >
-        <div className="section-padding">
-          <div className="flex items-center justify-between h-16 lg:h-20">
-            {/* Logo */}
-            <Link href="/" className="flex flex-col items-center flex-shrink-0 group">
-              <span className="font-serif text-2xl lg:text-3xl font-bold tracking-[0.22em] text-navy-950 group-hover:text-navy-800 transition-colors">
-                GIFT<span className="text-gold-500">ORA</span>
+        {/* ── Top row: logo centre + right actions ── */}
+        <div className="section-padding border-b border-cream-200">
+          <div className="relative flex items-center justify-center h-20">
+
+            {/* Logo — centered */}
+            <Link href="/" className="flex flex-col items-center group">
+              <span className="font-serif text-3xl lg:text-4xl font-bold tracking-[0.04em] text-navy-950 leading-none">
+                Giftora
               </span>
-              <span className="text-[9px] tracking-[0.3em] uppercase text-cream-500 font-medium -mt-0.5 hidden lg:block">Curated Gift Boxes</span>
+              <span className="text-[10px] italic text-navy-500 font-light tracking-wide mt-0.5">
+                Thoughtful Gift Boxes &amp; Sets
+              </span>
             </Link>
 
-            {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-8" ref={dropdownRef}>
-              {navLinks.map((link) => (
-                <div key={link.label} className="relative">
-                  {link.children ? (
-                    <button
-                      className="flex items-center gap-1 text-sm font-medium text-navy-800 hover:text-gold-600 transition-colors group"
-                      onClick={() =>
-                        setActiveDropdown(activeDropdown === link.label ? null : link.label)
-                      }
-                      onMouseEnter={() => setActiveDropdown(link.label)}
-                      onMouseLeave={() => setActiveDropdown(null)}
-                    >
-                      {link.label}
-                      <ChevronDown
-                        size={14}
-                        className={cn(
-                          'transition-transform',
-                          activeDropdown === link.label ? 'rotate-180' : ''
-                        )}
-                      />
-                    </button>
-                  ) : (
-                    <Link
-                      href={link.href}
-                      className="text-sm font-medium text-navy-800 hover:text-gold-600 transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  )}
-
-                  {/* Dropdown */}
-                  {link.children && (
-                    <div
-                      className={cn(
-                        'absolute top-full left-1/2 -translate-x-1/2 pt-3 transition-all duration-200',
-                        activeDropdown === link.label
-                          ? 'opacity-100 pointer-events-auto translate-y-0'
-                          : 'opacity-0 pointer-events-none -translate-y-2'
-                      )}
-                      onMouseEnter={() => setActiveDropdown(link.label)}
-                      onMouseLeave={() => setActiveDropdown(null)}
-                    >
-                      <div className="bg-white rounded-2xl shadow-premium border border-cream-200 p-4 w-72 grid grid-cols-2 gap-2">
-                        {link.children.map((child) => (
-                          <Link
-                            key={child.href}
-                            href={child.href}
-                            className="flex items-center gap-2 p-2 rounded-lg hover:bg-cream-50 text-sm text-navy-800 hover:text-gold-600 transition-colors group"
-                            onClick={() => setActiveDropdown(null)}
-                          >
-                            <span className="text-lg">{child.icon}</span>
-                            <span className="font-medium">{child.label}</span>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </nav>
-
-            {/* Actions */}
-            <div className="flex items-center gap-2 lg:gap-3">
+            {/* Right-side actions — absolutely positioned */}
+            <div className="absolute right-0 flex items-center gap-1 lg:gap-2">
               {/* Search */}
               <button
                 onClick={() => setSearchOpen(!searchOpen)}
-                className="p-2 text-navy-700 hover:text-gold-600 hover:bg-cream-100 rounded-full transition-all"
+                className="hidden sm:flex items-center gap-1.5 text-xs text-navy-700 hover:text-navy-950 font-medium uppercase tracking-wide transition-colors px-2 py-1.5"
                 aria-label="Search"
               >
-                <Search size={20} />
+                <Search size={15} /> Search
               </button>
 
               {/* Wishlist */}
               {session && (
                 <Link
                   href="/account/wishlist"
-                  className="p-2 text-navy-700 hover:text-gold-600 hover:bg-cream-100 rounded-full transition-all hidden sm:flex"
+                  className="p-2 text-navy-600 hover:text-navy-950 transition-colors hidden sm:flex"
                   aria-label="Wishlist"
                 >
-                  <Heart size={20} />
+                  <Heart size={18} />
                 </Link>
               )}
 
               {/* Cart */}
               <button
                 onClick={openCart}
-                className="p-2 text-navy-700 hover:text-gold-600 hover:bg-cream-100 rounded-full transition-all relative"
+                className="relative p-2 text-navy-600 hover:text-navy-950 transition-colors"
                 aria-label="Cart"
               >
-                <ShoppingBag size={20} />
+                <ShoppingBag size={18} />
                 {totalItems > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-gold-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-gold-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                     {totalItems > 99 ? '99+' : totalItems}
                   </span>
                 )}
               </button>
 
-              {/* User */}
+              {/* User / Sign In */}
               {session ? (
                 <div className="relative group hidden sm:block">
-                  <button className="flex items-center gap-2 p-1.5 text-navy-700 hover:text-gold-600 hover:bg-cream-100 rounded-full transition-all">
+                  <button className="flex items-center gap-1.5 text-xs text-navy-700 hover:text-navy-950 font-medium uppercase tracking-wide transition-colors px-2 py-1.5">
                     {session.user.image ? (
-                      <Image
-                        src={session.user.image}
-                        alt={session.user.name || 'User'}
-                        width={28}
-                        height={28}
-                        className="rounded-full object-cover"
-                      />
+                      <Image src={session.user.image} alt={session.user.name || 'User'} width={24} height={24} className="rounded-full object-cover" />
                     ) : (
-                      <div className="w-7 h-7 bg-navy-950 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                      <div className="w-6 h-6 bg-navy-950 rounded-full flex items-center justify-center text-white text-[10px] font-bold">
                         {session.user.name?.[0]?.toUpperCase() || 'U'}
                       </div>
                     )}
+                    Account
                   </button>
-                  <div className="absolute right-0 top-full pt-2 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 -translate-y-1 group-hover:translate-y-0">
-                    <div className="bg-white rounded-2xl shadow-premium border border-cream-200 py-2 w-52">
+                  {/* Dropdown */}
+                  <div className="absolute right-0 top-full pt-1 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-200 -translate-y-1 group-hover:translate-y-0">
+                    <div className="bg-white rounded-xl shadow-premium border border-cream-200 py-2 w-52">
                       <div className="px-4 py-2 border-b border-cream-100 mb-1">
                         <p className="font-semibold text-navy-950 text-sm truncate">{session.user.name}</p>
                         <p className="text-xs text-cream-500 truncate">{session.user.email}</p>
@@ -227,10 +167,7 @@ export function Header() {
                         <Settings size={15} /> Account Settings
                       </Link>
                       <div className="border-t border-cream-100 mt-1">
-                        <button
-                          onClick={() => signOut({ callbackUrl: '/' })}
-                          className="flex items-center gap-3 px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors w-full"
-                        >
+                        <button onClick={() => signOut({ callbackUrl: '/' })} className="flex items-center gap-3 px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition-colors w-full">
                           <LogOut size={15} /> Sign Out
                         </button>
                       </div>
@@ -240,43 +177,93 @@ export function Header() {
               ) : (
                 <Link
                   href="/login"
-                  className="hidden sm:flex items-center gap-2 px-4 py-2 bg-navy-950 text-white text-sm font-medium rounded-lg hover:bg-navy-800 transition-colors"
+                  className="hidden sm:flex items-center gap-1.5 text-xs text-navy-700 hover:text-navy-950 font-medium uppercase tracking-wide transition-colors px-2 py-1.5"
                 >
                   <User size={15} /> Sign In
                 </Link>
               )}
 
-              {/* Mobile menu */}
+              {/* Mobile hamburger */}
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="lg:hidden p-2 text-navy-700 hover:bg-cream-100 rounded-full transition-all"
+                className="lg:hidden p-2 text-navy-700 hover:text-navy-950 transition-colors"
               >
                 {mobileOpen ? <X size={22} /> : <Menu size={22} />}
               </button>
             </div>
           </div>
-
-          {/* Search Bar */}
-          {searchOpen && (
-            <div className="border-t border-cream-200 py-3 animate-fade-in">
-              <form onSubmit={handleSearch} className="flex gap-2">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search gift boxes, occasions..."
-                  autoFocus
-                  className="input-field text-sm flex-1"
-                />
-                <button type="submit" className="btn-gold px-5 py-2 text-sm">
-                  Search
-                </button>
-              </form>
-            </div>
-          )}
         </div>
 
-        {/* Mobile Menu */}
+        {/* ── Nav row ── */}
+        <div className="hidden lg:block border-b border-cream-200 bg-white">
+          <nav className="section-padding flex items-center justify-center gap-8 h-11" ref={dropdownRef}>
+            {navLinks.map((link) => (
+              <div key={link.label} className="relative">
+                {link.children ? (
+                  <button
+                    className="flex items-center gap-1 text-sm text-navy-700 hover:text-navy-950 font-medium transition-colors"
+                    onMouseEnter={() => setActiveDropdown(link.label)}
+                    onMouseLeave={() => setActiveDropdown(null)}
+                    onClick={() => setActiveDropdown(activeDropdown === link.label ? null : link.label)}
+                  >
+                    {link.label}
+                    <ChevronDown size={13} className={cn('transition-transform', activeDropdown === link.label ? 'rotate-180' : '')} />
+                  </button>
+                ) : (
+                  <Link href={link.href} className="text-sm text-navy-700 hover:text-navy-950 font-medium transition-colors">
+                    {link.label}
+                  </Link>
+                )}
+
+                {link.children && (
+                  <div
+                    className={cn(
+                      'absolute top-full left-1/2 -translate-x-1/2 pt-3 transition-all duration-200',
+                      activeDropdown === link.label
+                        ? 'opacity-100 pointer-events-auto translate-y-0'
+                        : 'opacity-0 pointer-events-none -translate-y-2'
+                    )}
+                    onMouseEnter={() => setActiveDropdown(link.label)}
+                    onMouseLeave={() => setActiveDropdown(null)}
+                  >
+                    <div className="bg-white rounded-2xl shadow-premium border border-cream-200 p-4 w-72 grid grid-cols-2 gap-2">
+                      {link.children.map((child) => (
+                        <Link
+                          key={child.href}
+                          href={child.href}
+                          className="flex items-center gap-2 p-2 rounded-lg hover:bg-cream-50 text-sm text-navy-700 hover:text-gold-600 transition-colors"
+                          onClick={() => setActiveDropdown(null)}
+                        >
+                          <span className="text-base">{child.icon}</span>
+                          <span className="font-medium">{child.label}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </nav>
+        </div>
+
+        {/* Search bar */}
+        {searchOpen && (
+          <div className="border-b border-cream-200 bg-white py-3 animate-fade-in">
+            <form onSubmit={handleSearch} className="section-padding flex gap-2">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search gift boxes, occasions…"
+                autoFocus
+                className="input-field text-sm flex-1"
+              />
+              <button type="submit" className="btn-gold px-5 py-2.5 text-sm">Search</button>
+            </form>
+          </div>
+        )}
+
+        {/* Mobile menu */}
         {mobileOpen && (
           <div className="lg:hidden bg-white border-t border-cream-200 animate-fade-in">
             <div className="px-4 py-4 space-y-1">
@@ -312,18 +299,12 @@ export function Header() {
                   {isAdmin(session.user.role) && (
                     <Link href="/admin" className="block py-2 text-gold-600 font-medium" onClick={() => setMobileOpen(false)}>Admin Dashboard</Link>
                   )}
-                  <button onClick={() => { setMobileOpen(false); signOut({ callbackUrl: '/' }); }} className="text-red-500 font-medium py-2">
-                    Sign Out
-                  </button>
+                  <button onClick={() => { setMobileOpen(false); signOut({ callbackUrl: '/' }); }} className="text-red-500 font-medium py-2">Sign Out</button>
                 </div>
               ) : (
                 <div className="pt-3 flex gap-3">
-                  <Link href="/login" className="flex-1 text-center py-2.5 bg-navy-950 text-white rounded-lg font-medium" onClick={() => setMobileOpen(false)}>
-                    Sign In
-                  </Link>
-                  <Link href="/register" className="flex-1 text-center py-2.5 border border-gold-400 text-gold-600 rounded-lg font-medium" onClick={() => setMobileOpen(false)}>
-                    Register
-                  </Link>
+                  <Link href="/login" className="flex-1 text-center py-2.5 bg-gold-500 text-white rounded-lg font-medium" onClick={() => setMobileOpen(false)}>Sign In</Link>
+                  <Link href="/register" className="flex-1 text-center py-2.5 border border-navy-950 text-navy-950 rounded-lg font-medium" onClick={() => setMobileOpen(false)}>Register</Link>
                 </div>
               )}
             </div>
