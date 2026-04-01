@@ -56,6 +56,9 @@ export function CategoriesGrid({ categories }: { categories: Category[] }) {
   return (
     <section className="py-14 lg:py-20 bg-white">
       <div className="section-padding">
+        <h2 className="font-serif text-2xl lg:text-3xl font-semibold text-gold-500 mb-8">
+          Featured Collections
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8">
           {cards.map((card) => (
             <div key={card.slug} className="flex flex-col items-center text-center group bg-cream-100 rounded-2xl p-5 pb-7">
@@ -79,6 +82,11 @@ export function CategoriesGrid({ categories }: { categories: Category[] }) {
               </Link>
             </div>
           ))}
+        </div>
+        <div className="mt-8 text-right">
+          <Link href="/collections" className="text-gold-500 font-semibold hover:text-gold-600 transition-colors">
+            View all →
+          </Link>
         </div>
       </div>
     </section>
