@@ -6,7 +6,6 @@ import { HeroSection } from '@/components/home/HeroSection';
 import { CategoriesGrid } from '@/components/home/CategoriesGrid';
 import { FeaturedProducts } from '@/components/home/FeaturedProducts';
 import { WhyGiftora } from '@/components/home/WhyGiftora';
-import { Testimonials } from '@/components/home/Testimonials';
 import { NewsletterBanner } from '@/components/home/NewsletterBanner';
 import { InstagramFeed } from '@/components/home/InstagramFeed';
 
@@ -30,20 +29,10 @@ async function getCategories() {
   });
 }
 
-async function getTestimonials() {
-  return prisma.review.findMany({
-    where: { status: 'APPROVED', rating: { gte: 4 } },
-    take: 6,
-    include: { user: { select: { name: true, avatar: true } } },
-    orderBy: { helpfulCount: 'desc' },
-  });
-}
-
 export default async function HomePage() {
-  const [featuredProducts, categories, testimonials] = await Promise.all([
+  const [featuredProducts, categories] = await Promise.all([
     getFeaturedProducts(),
     getCategories(),
-    getTestimonials(),
   ]);
 
   // Serialize Decimal values
@@ -63,7 +52,6 @@ export default async function HomePage() {
       <Suspense fallback={<div className="h-96 animate-shimmer" />}>
         <FeaturedProducts products={serializedProducts} />
       </Suspense>
-      <Testimonials testimonials={testimonials} />
       <InstagramFeed />
       <NewsletterBanner />
     </>
