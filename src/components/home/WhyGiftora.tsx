@@ -19,7 +19,7 @@ export function WhyGiftora({ products = [] }: Props) {
   const bestSellers = products.slice(0, 4);
 
   return (
-    <section className="py-14 lg:py-20 bg-cream-50">
+    <section className="py-14 lg:py-20 bg-cream-50 overflow-hidden">
       <div className="section-padding">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-stretch">
 
@@ -27,7 +27,7 @@ export function WhyGiftora({ products = [] }: Props) {
           <div className="relative flex items-center justify-center self-stretch">
             {/* Botanical watercolor circle image */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative w-full h-full">
+              <div className="relative w-[140%] h-[140%] scale-100">
                 <Image
                   src="https://i.imgur.com/I3p4nka.png"
                   alt=""

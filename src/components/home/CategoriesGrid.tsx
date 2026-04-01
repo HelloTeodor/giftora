@@ -58,7 +58,7 @@ export function CategoriesGrid({ categories }: { categories: Category[] }) {
       <div className="section-padding">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8">
           {cards.map((card) => (
-            <div key={card.slug} className="flex flex-col items-center text-center group">
+            <div key={card.slug} className="flex flex-col items-center text-center group bg-cream-100 rounded-2xl p-5 pb-7">
               {/* Image */}
               <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden mb-5 shadow-card">
                 <Image
