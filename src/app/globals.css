@@ -6,48 +6,48 @@
 
 @layer base {
   :root {
-    --background: 52 97% 94%;
-    --foreground: 95 16% 12%;
+    --background: 60 11% 97%;
+    --foreground: 204 85% 20%;
     --card: 0 0% 100%;
-    --card-foreground: 95 16% 12%;
+    --card-foreground: 204 85% 20%;
     --popover: 0 0% 100%;
-    --popover-foreground: 95 16% 12%;
-    --primary: 28 50% 64%;
-    --primary-foreground: 52 97% 94%;
-    --secondary: 68 28% 80%;
-    --secondary-foreground: 95 16% 12%;
-    --muted: 68 34% 85%;
-    --muted-foreground: 79 18% 48%;
-    --accent: 68 34% 85%;
-    --accent-foreground: 95 16% 12%;
+    --popover-foreground: 204 85% 20%;
+    --primary: 42 100% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 32 12% 92%;
+    --secondary-foreground: 204 85% 20%;
+    --muted: 32 12% 92%;
+    --muted-foreground: 32 8% 55%;
+    --accent: 197 43% 62%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 68 28% 80%;
-    --input: 68 28% 80%;
-    --ring: 28 50% 64%;
+    --border: 32 15% 85%;
+    --input: 32 15% 85%;
+    --ring: 42 100% 65%;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 40 15% 8%;
+    --background: 204 60% 8%;
     --foreground: 42 25% 92%;
-    --card: 40 12% 11%;
+    --card: 204 55% 11%;
     --card-foreground: 42 25% 92%;
-    --popover: 40 12% 11%;
+    --popover: 204 55% 11%;
     --popover-foreground: 42 25% 92%;
-    --primary: 20 55% 55%;
-    --primary-foreground: 40 15% 8%;
-    --secondary: 38 12% 20%;
+    --primary: 42 100% 65%;
+    --primary-foreground: 204 60% 8%;
+    --secondary: 204 40% 18%;
     --secondary-foreground: 42 25% 92%;
-    --muted: 38 10% 18%;
-    --muted-foreground: 30 12% 62%;
-    --accent: 38 12% 20%;
-    --accent-foreground: 42 25% 92%;
+    --muted: 204 35% 16%;
+    --muted-foreground: 204 20% 60%;
+    --accent: 197 43% 50%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 38 12% 20%;
-    --input: 38 12% 20%;
-    --ring: 20 55% 55%;
+    --border: 204 40% 18%;
+    --input: 204 40% 18%;
+    --ring: 42 100% 65%;
   }
 }
 
@@ -57,7 +57,7 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    background-color: #FEFAE0;
+    background-color: #FAFAF7;
   }
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif;
@@ -66,15 +66,15 @@
 
 @layer components {
   .btn-gold {
-    @apply bg-gold-gradient text-white font-semibold px-6 py-3 rounded-lg
-           shadow-gold hover:shadow-gold-lg transition-all duration-300
-           hover:scale-[1.02] active:scale-[0.98] tracking-wide;
+    @apply bg-gold-500 text-white font-semibold px-6 py-3 rounded-lg
+           shadow-gold hover:bg-gold-600 hover:shadow-gold-lg transition-all duration-300
+           hover:scale-[1.02] active:scale-[0.98] tracking-wide uppercase text-sm;
   }
 
   .btn-navy {
     @apply bg-navy-950 text-white font-semibold px-6 py-3 rounded-lg
-           hover:bg-navy-900 transition-all duration-300
-           hover:scale-[1.02] active:scale-[0.98];
+           hover:bg-navy-800 transition-all duration-300
+           hover:scale-[1.02] active:scale-[0.98] uppercase text-sm tracking-wide;
   }
 
   .btn-outline {
@@ -91,7 +91,7 @@
   }
 
   .gold-text {
-    @apply text-transparent bg-clip-text bg-gold-gradient;
+    @apply text-gold-500;
   }
 
   .input-field {
@@ -105,9 +105,8 @@
            bg-gold-100 text-gold-800;
   }
 
-  /* Label style — tracked uppercase used throughout */
   .label-tag {
-    @apply text-gold-600 text-xs font-semibold uppercase tracking-[0.18em];
+    @apply text-icy-300 text-xs font-semibold uppercase tracking-[0.18em];
   }
 
   .line-clamp-2 {
@@ -124,20 +123,10 @@
     overflow: hidden;
   }
 
-  /* Refined scrollbar */
-  ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-  }
-  ::-webkit-scrollbar-track {
-    @apply bg-cream-100;
-  }
-  ::-webkit-scrollbar-thumb {
-    @apply bg-cream-300 rounded-full;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gold-400;
-  }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { @apply bg-cream-100; }
+  ::-webkit-scrollbar-thumb { @apply bg-cream-300 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-gold-400; }
 }
 
 /* Blog content */
@@ -157,12 +146,10 @@
 .blog-content hr  { @apply border-cream-200 my-8; }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+  .text-balance { text-wrap: balance; }
 
   .animate-shimmer {
-    background: linear-gradient(90deg, #E9EDC9 25%, #CCD5AE 50%, #E9EDC9 75%);
+    background: linear-gradient(90deg, #F5F2EE 25%, #EDE8E1 50%, #F5F2EE 75%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
   }

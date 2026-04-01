@@ -59,10 +59,10 @@ export default async function HomePage() {
     <>
       <HeroSection />
       <CategoriesGrid categories={categories} />
+      <WhyGiftora products={serializedProducts} />
       <Suspense fallback={<div className="h-96 animate-shimmer" />}>
         <FeaturedProducts products={serializedProducts} />
       </Suspense>
-      <WhyGiftora />
       <Testimonials testimonials={testimonials} />
       <InstagramFeed />
       <NewsletterBanner />

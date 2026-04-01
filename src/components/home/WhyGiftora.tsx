@@ -1,72 +1,125 @@
-import { Gift, Truck, Shield, RefreshCw, Heart, Sparkles } from 'lucide-react';
+import Link from 'next/link';
+import Image from 'next/image';
 
-const features = [
-  {
-    icon: Gift,
-    title: 'Artisan Curation',
-    description: 'Every box is thoughtfully assembled with premium, hand-selected products.',
-  },
-  {
-    icon: Sparkles,
-    title: 'Luxury Packaging',
-    description: 'Stunning presentation in branded boxes wrapped with signature gold ribbon.',
-  },
-  {
-    icon: Truck,
-    title: 'Fast & Reliable Delivery',
-    description: 'Free shipping over €75. Express options available nationwide.',
-  },
-  {
-    icon: Heart,
-    title: 'Personal Touch',
-    description: 'Add a handwritten note or personalised message to make it truly special.',
-  },
-  {
-    icon: Shield,
-    title: 'Satisfaction Guaranteed',
-    description: "Not happy? We'll make it right with our hassle-free returns policy.",
-  },
-  {
-    icon: RefreshCw,
-    title: 'Easy Returns',
-    description: '30-day return window. No questions asked, full refund guaranteed.',
-  },
-];
+interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  basePrice: number;
+  salePrice?: number | null;
+  images: { url: string; isPrimary: boolean }[];
+}
 
-export function WhyGiftora() {
+interface Props {
+  products?: Product[];
+}
+
+export function WhyGiftora({ products = [] }: Props) {
+  const bestSellers = products.slice(0, 4);
+
   return (
-    <section className="py-16 lg:py-24 bg-navy-950 relative overflow-hidden">
-      <div className="absolute inset-0 bg-hero-pattern" />
-      <div className="absolute top-0 right-1/4 w-64 h-64 rounded-full bg-gold-500/5 blur-3xl" />
+    <section className="py-14 lg:py-20 bg-cream-50">
+      <div className="section-padding">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
 
-      <div className="section-padding relative z-10">
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="h-px w-12 bg-white/20" />
-            <p className="text-gold-400 text-xs font-semibold uppercase tracking-[0.2em]">The Giftora Difference</p>
-            <div className="h-px w-12 bg-white/20" />
-          </div>
-          <h2 className="font-serif text-3xl lg:text-5xl font-bold text-white mb-4">
-            Why Choose Giftora?
-          </h2>
-          <p className="text-cream-400 max-w-xl mx-auto">
-            We believe gifting should be effortless, beautiful, and meaningful. Every detail matters.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((f, i) => (
+          {/* LEFT — Sustainability blob */}
+          <div className="relative flex items-center justify-center min-h-[380px] lg:min-h-[480px]">
+            {/* Organic blob background */}
             <div
-              key={f.title}
-              className="group p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-gold-500/30 transition-all duration-300"
-            >
-              <div className="w-12 h-12 rounded-xl bg-gold-500/10 border border-gold-500/20 flex items-center justify-center mb-4 group-hover:bg-gold-500/20 transition-colors">
-                <f.icon size={22} className="text-gold-400" />
-              </div>
-              <h3 className="font-serif text-white font-semibold text-lg mb-2">{f.title}</h3>
-              <p className="text-cream-400 text-sm leading-relaxed">{f.description}</p>
+              className="absolute inset-0"
+              style={{
+                background: '#6BB9D4',
+                borderRadius: '60% 40% 55% 45% / 45% 55% 45% 55%',
+                opacity: 0.18,
+              }}
+            />
+            <div
+              className="absolute inset-4"
+              style={{
+                background: '#6BB9D4',
+                borderRadius: '45% 55% 40% 60% / 55% 45% 55% 45%',
+                opacity: 0.22,
+              }}
+            />
+
+            {/* Content */}
+            <div className="relative z-10 px-8 py-10 text-center max-w-sm">
+              <h2 className="font-serif text-3xl lg:text-4xl font-semibold text-navy-950 leading-snug mb-4">
+                Our Commitment to Sustainability
+              </h2>
+              <p className="text-navy-700 text-sm leading-relaxed mb-6">
+                As a family-owned business, we believe in thoughtful gifting that
+                doesn't harm the earth. We use eco-friendly materials, sustainable
+                practices, and a personal touch to create gifts that bring joy to
+                the heart and home.
+              </p>
+              <Link href="/about" className="btn-navy inline-block mb-4">
+                Lovingly Made
+              </Link>
+              <p className="text-icy-600 text-xs font-medium tracking-wide mt-2">
+                Eco-Friendly Packaging
+              </p>
             </div>
-          ))}
+          </div>
+
+          {/* RIGHT — Best sellers grid */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-icy-500 mb-2">
+              Shop Best Sellers
+            </p>
+            <div className="grid grid-cols-2 gap-4">
+              {bestSellers.length > 0
+                ? bestSellers.map((product) => {
+                    const img =
+                      product.images.find((i) => i.isPrimary)?.url ||
+                      product.images[0]?.url;
+                    const price = product.salePrice ?? product.basePrice;
+                    return (
+                      <Link
+                        key={product.id}
+                        href={`/products/${product.slug}`}
+                        className="group block bg-white rounded-xl overflow-hidden shadow-card hover:shadow-premium transition-all"
+                      >
+                        <div className="relative aspect-square">
+                          {img ? (
+                            <Image
+                              src={img}
+                              alt={product.name}
+                              fill
+                              sizes="(max-width: 768px) 50vw, 25vw"
+                              className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-cream-100 flex items-center justify-center text-4xl">🎁</div>
+                          )}
+                        </div>
+                        <div className="p-3">
+                          <p className="text-icy-500 text-[10px] font-semibold uppercase tracking-widest mb-1">
+                            Personalize It
+                          </p>
+                          <h4 className="font-serif text-navy-950 text-sm font-semibold leading-tight mb-1 line-clamp-2">
+                            {product.name}
+                          </h4>
+                          <p className="text-navy-700 text-sm font-medium">
+                            From €{price.toFixed(2)}
+                          </p>
+                        </div>
+                      </Link>
+                    );
+                  })
+                : /* Placeholder cards when no products */
+                  Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="bg-white rounded-xl overflow-hidden shadow-card">
+                      <div className="aspect-square bg-cream-100 animate-shimmer" />
+                      <div className="p-3 space-y-2">
+                        <div className="h-2.5 bg-cream-200 rounded w-1/2 animate-shimmer" />
+                        <div className="h-3 bg-cream-200 rounded animate-shimmer" />
+                        <div className="h-3 bg-cream-200 rounded w-2/3 animate-shimmer" />
+                      </div>
+                    </div>
+                  ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
