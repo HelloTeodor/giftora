@@ -23,8 +23,11 @@ export function FeaturedProducts({ products }: { products: Product[] }) {
       <div className="section-padding">
         <div className="flex items-end justify-between mb-12">
           <div>
-            <p className="text-gold-600 text-sm font-semibold uppercase tracking-widest mb-3">Our Bestsellers</p>
-            <h2 className="font-serif text-3xl lg:text-4xl font-bold text-navy-950">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="h-px w-8 bg-cream-300" />
+              <p className="text-gold-600 text-xs font-semibold uppercase tracking-[0.2em]">Our Bestsellers</p>
+            </div>
+            <h2 className="font-serif text-3xl lg:text-5xl font-bold text-navy-950">
               Featured Gift Boxes
             </h2>
           </div>

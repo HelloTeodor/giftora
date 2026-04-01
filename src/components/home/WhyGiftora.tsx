@@ -41,8 +41,12 @@ export function WhyGiftora() {
 
       <div className="section-padding relative z-10">
         <div className="text-center mb-12">
-          <p className="text-gold-500 text-sm font-semibold uppercase tracking-widest mb-3">The Giftora Difference</p>
-          <h2 className="font-serif text-3xl lg:text-4xl font-bold text-white mb-4">
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="h-px w-12 bg-white/20" />
+            <p className="text-gold-400 text-xs font-semibold uppercase tracking-[0.2em]">The Giftora Difference</p>
+            <div className="h-px w-12 bg-white/20" />
+          </div>
+          <h2 className="font-serif text-3xl lg:text-5xl font-bold text-white mb-4">
             Why Choose Giftora?
           </h2>
           <p className="text-cream-400 max-w-xl mx-auto">

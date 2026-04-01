@@ -27,8 +27,12 @@ export function Testimonials({ testimonials }: { testimonials: Testimonial[] }) 
     <section className="py-16 lg:py-24 bg-cream-50">
       <div className="section-padding">
         <div className="text-center mb-12">
-          <p className="text-gold-600 text-sm font-semibold uppercase tracking-widest mb-3">Customer Love</p>
-          <h2 className="font-serif text-3xl lg:text-4xl font-bold text-navy-950 mb-4">
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="h-px w-12 bg-cream-300" />
+            <p className="text-gold-600 text-xs font-semibold uppercase tracking-[0.2em]">Customer Love</p>
+            <div className="h-px w-12 bg-cream-300" />
+          </div>
+          <h2 className="font-serif text-3xl lg:text-5xl font-bold text-navy-950 mb-4">
             What Our Customers Say
           </h2>
           <div className="flex items-center justify-center gap-2">
