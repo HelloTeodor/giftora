@@ -4,8 +4,8 @@ import { Providers } from './providers';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Giftora — Premium Gift Boxes for Every Occasion',
-    template: '%s | Giftora',
+    default: 'Radu & Co — Premium Gift Boxes for Every Occasion',
+    template: '%s | Radu & Co',
   },
   description:
     'Discover beautifully curated gift boxes for every occasion. New hire, Christmas, birthdays, newborns, Valentine\'s Day, Easter, and more. Premium gifting made effortless.',
@@ -13,19 +13,19 @@ export const metadata: Metadata = {
     'gift boxes', 'luxury gifts', 'curated gifts', 'premium gift boxes',
     'corporate gifts', 'birthday gifts', 'Christmas gifts', 'new hire gifts',
   ],
-  authors: [{ name: 'Giftora' }],
-  creator: 'Giftora',
+  authors: [{ name: 'Radu & Co' }],
+  creator: 'Radu & Co',
   openGraph: {
     type: 'website',
     locale: 'en_IE',
     url: process.env.NEXT_PUBLIC_APP_URL,
-    siteName: 'Giftora',
-    title: 'Giftora — Premium Gift Boxes for Every Occasion',
+    siteName: 'Radu & Co',
+    title: 'Radu & Co — Premium Gift Boxes for Every Occasion',
     description: 'Beautifully curated gift boxes for every occasion.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Giftora — Premium Gift Boxes',
+    title: 'Radu & Co — Premium Gift Boxes',
     description: 'Beautifully curated gift boxes for every occasion.',
   },
   robots: {
