@@ -31,6 +31,12 @@ const fallbackCards = [
   },
 ];
 
+const displayNames: Record<string, string> = {
+  'new-hire':  'Corporate Gift Boxes',
+  'christmas': 'Christmas Spirit Gift Sets',
+  'birthday':  'Birthday Surprise Box',
+};
+
 const categoryImages: Record<string, string> = {
   'new-hire':  'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?w=600&auto=format&fit=crop',
   'christmas': 'https://images.unsplash.com/photo-1512909006721-3d6018887383?w=600&auto=format&fit=crop',
@@ -47,7 +53,7 @@ export function CategoriesGrid({ categories }: { categories: Category[] }) {
   const cards = categories.slice(0, 3).length === 3
     ? categories.slice(0, 3).map((cat) => ({
         slug: cat.slug,
-        name: cat.name,
+        name: displayNames[cat.slug] || cat.name,
         image: cat.image || categoryImages[cat.slug] || fallbackCards[0].image,
         href: `/categories/${cat.slug}`,
       }))
@@ -61,9 +67,9 @@ export function CategoriesGrid({ categories }: { categories: Category[] }) {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8">
           {cards.map((card) => (
-            <div key={card.slug} className="flex flex-col items-center text-center group bg-cream-100 rounded-2xl p-5 pb-7">
-              {/* Image */}
-              <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden mb-5 shadow-card">
+            <div key={card.slug} className="flex flex-col items-center text-center group bg-cream-100 rounded-xl overflow-hidden shadow-card">
+              {/* Image — full width, flush top */}
+              <div className="relative w-full aspect-[4/3]">
                 <Image
                   src={card.image}
                   alt={card.name}
@@ -72,14 +78,15 @@ export function CategoriesGrid({ categories }: { categories: Category[] }) {
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
-              {/* Title */}
-              <h3 className="font-serif text-xl font-semibold text-navy-950 mb-4">
-                {card.name}
-              </h3>
-              {/* Button */}
-              <Link href={card.href} className="btn-gold px-8">
-                Shop Now
-              </Link>
+              {/* Text area */}
+              <div className="px-5 pt-5 pb-7 w-full">
+                <h3 className="font-serif text-xl font-semibold text-navy-950 mb-4">
+                  {card.name}
+                </h3>
+                <Link href={card.href} className="btn-gold px-8">
+                  Shop Now
+                </Link>
+              </div>
             </div>
           ))}
         </div>
