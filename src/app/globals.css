@@ -16,9 +16,9 @@
     --primary-foreground: 52 97% 94%;
     --secondary: 68 28% 80%;
     --secondary-foreground: 95 16% 12%;
-    --muted: 68 34% 85%;
-    --muted-foreground: 79 18% 48%;
-    --accent: 68 34% 85%;
+    --muted: 80 30% 76%; /* #CCD5AE */
+    --muted-foreground: 42 20% 28%;
+    --accent: 80 30% 76%; /* #CCD5AE */
     --accent-foreground: 95 16% 12%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
@@ -162,7 +162,7 @@
   }
 
   .animate-shimmer {
-    background: linear-gradient(90deg, #E9EDC9 25%, #CCD5AE 50%, #E9EDC9 75%);
+    background: linear-gradient(90deg, #CCD5AE 25%, #CCD5AE 50%, #CCD5AE 75%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
   }
