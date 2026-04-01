@@ -49,8 +49,8 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-4 lg:col-span-2">
             <Link href="/" className="block mb-4">
-              <span className="font-serif text-2xl font-bold tracking-[0.04em] text-white">Giftora</span>
-              <span className="block text-[10px] italic text-navy-400 font-light tracking-wide mt-0.5">Thoughtful Gift Boxes &amp; Sets</span>
+              <span className="font-serif text-2xl font-bold tracking-[0.04em] text-white">Radu <span className="text-gold-500">&amp;</span> Co</span>
+              <span className="block text-[10px] italic text-navy-400 font-light tracking-wide mt-0.5">Thoughtful Gifts &amp; Living</span>
             </Link>
             <p className="text-navy-300 text-sm leading-relaxed mb-6 max-w-xs">
               Beautifully curated, eco-friendly gift boxes for every occasion — made with love and care.
@@ -112,7 +112,7 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-navy-800">
         <div className="section-padding py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-navy-400">
-          <p>© {new Date().getFullYear()} Giftora. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Radu &amp; Co. All rights reserved.</p>
           <div className="flex gap-5 flex-wrap justify-center">
             {[
               { label: 'Privacy Policy',  href: '/policies/privacy' },
