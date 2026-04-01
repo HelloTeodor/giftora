@@ -21,13 +21,13 @@ export function WhyGiftora({ products = [] }: Props) {
   return (
     <section className="py-14 lg:py-20 bg-cream-50">
       <div className="section-padding">
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-stretch">
 
           {/* LEFT — Sustainability blob */}
-          <div className="relative flex items-center justify-center min-h-[380px] lg:min-h-[500px]">
+          <div className="relative flex items-center justify-center self-stretch">
             {/* Botanical watercolor circle image */}
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative w-full h-full max-w-[500px] max-h-[500px] mx-auto">
+              <div className="relative w-full h-full">
                 <Image
                   src="https://i.imgur.com/I3p4nka.png"
                   alt=""
@@ -39,7 +39,7 @@ export function WhyGiftora({ products = [] }: Props) {
             </div>
 
             {/* Text content */}
-            <div className="relative z-10 px-10 py-12 text-center max-w-sm">
+            <div className="relative z-10 px-10 py-16 text-center max-w-sm">
               <h2 className="font-serif text-3xl lg:text-4xl font-semibold text-navy-950 leading-snug mb-4">
                 Our Commitment to Sustainability
               </h2>
