@@ -1,17 +1,43 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState, useEffect } from 'react';
+
+const slides = [
+  { src: 'https://i.imgur.com/AswAvB2.png', alt: 'Beautifully curated eco-friendly gift box' },
+  { src: 'https://i.imgur.com/vicYZKf.png', alt: 'Premium gift set with natural products' },
+  { src: 'https://i.imgur.com/xTPHYnW.png', alt: 'Thoughtful gifts made with love' },
+];
 
 export function HeroSection() {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <section className="relative w-full h-[480px] sm:h-[560px] lg:h-[640px] overflow-hidden">
-      {/* Full-bleed hero image */}
-      <Image
-        src="https://i.imgur.com/AswAvB2.png"
-        alt="Beautifully curated eco-friendly gift box"
-        fill
-        className="object-cover object-left"
-        priority
-      />
+      {/* Slides */}
+      {slides.map((slide, i) => (
+        <div
+          key={slide.src}
+          className="absolute inset-0 transition-opacity duration-1000"
+          style={{ opacity: i === current ? 1 : 0 }}
+        >
+          <Image
+            src={slide.src}
+            alt={slide.alt}
+            fill
+            className="object-cover object-left"
+            priority={i === 0}
+          />
+        </div>
+      ))}
 
       {/* Text overlay — sits over the right/white area of the image */}
       <div className="absolute inset-0 flex items-center justify-end">
@@ -31,9 +57,18 @@ export function HeroSection() {
 
           {/* Slider dots */}
           <div className="flex items-center gap-2 mt-10">
-            <span className="w-6 h-2 rounded-full bg-gold-500" />
-            <span className="w-2 h-2 rounded-full bg-cream-300" />
-            <span className="w-2 h-2 rounded-full bg-cream-300" />
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                className={`transition-all duration-300 rounded-full ${
+                  i === current
+                    ? 'w-6 h-2 bg-gold-500'
+                    : 'w-2 h-2 bg-cream-300'
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
           </div>
         </div>
       </div>
