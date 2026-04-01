@@ -72,11 +72,21 @@ export function Header() {
 
   return (
     <>
-      {/* Announcement bar */}
-      <div className="bg-navy-950 text-white text-xs text-center py-2 px-4 tracking-[0.12em] font-medium">
-        Free shipping on orders over €75 &nbsp;·&nbsp; Use code{' '}
-        <span className="font-bold text-gold-400 tracking-widest">WELCOME10</span>{' '}
-        for 10% off your first order
+      {/* Announcement bar — infinite ticker */}
+      <div className="bg-navy-950 text-white text-xs py-2 overflow-hidden whitespace-nowrap">
+        <div className="flex animate-marquee">
+          {[0, 1].map((n) => (
+            <span key={n} className="flex shrink-0 items-center gap-0 pr-16">
+              <span className="tracking-[0.12em] font-medium">Free shipping on orders over €75</span>
+              <span className="mx-6 text-navy-500">·</span>
+              <span className="tracking-[0.12em] font-medium">Use code <span className="font-bold text-gold-400 tracking-widest">WELCOME10</span> for 10% off your first order</span>
+              <span className="mx-6 text-navy-500">·</span>
+              <span className="tracking-[0.12em] font-medium">Find the perfect gift for your loved ones</span>
+              <span className="mx-6 text-navy-500">·</span>
+              <span className="tracking-[0.12em] font-medium">Gifts made with love</span>
+            </span>
+          ))}
+        </div>
       </div>
 
       <header
