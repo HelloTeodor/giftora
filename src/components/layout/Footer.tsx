@@ -61,10 +61,11 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
           {/* Brand */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
-            <Link href="/" className="block mb-4">
-              <span className="font-serif text-2xl font-bold tracking-widest text-white">
-                GIFT<span className="text-gold-500">ORA</span>
+            <Link href="/" className="block mb-4 group">
+              <span className="font-serif text-2xl font-bold tracking-[0.22em] text-white group-hover:text-cream-200 transition-colors">
+                GIFT<span className="text-gold-400">ORA</span>
               </span>
+              <span className="block text-[9px] tracking-[0.28em] uppercase text-cream-500 font-medium mt-0.5">Curated Gift Boxes</span>
             </Link>
             <p className="text-cream-400 text-sm leading-relaxed mb-6">
               Beautifully curated gift boxes for every moment that matters. Making gifting effortless and unforgettable.

@@ -71,25 +71,26 @@ export function Header() {
   return (
     <>
       {/* Announcement bar */}
-      <div className="bg-navy-950 text-gold-300 text-xs text-center py-2 px-4 font-medium tracking-wide">
-        ✨ Free shipping on orders over €75 · Use code <span className="font-bold text-gold-400">WELCOME10</span> for 10% off your first order
+      <div className="bg-navy-950 text-cream-300 text-xs text-center py-2.5 px-4 tracking-[0.14em] uppercase font-medium">
+        Free shipping on orders over €75 &nbsp;·&nbsp; Use code <span className="font-bold text-gold-300 tracking-widest">WELCOME10</span> for 10% off your first order
       </div>
 
       <header
         className={cn(
-          'sticky top-0 z-50 transition-all duration-300',
+          'sticky top-0 z-50 transition-all duration-300 border-b',
           scrolled
-            ? 'bg-white/95 backdrop-blur-md shadow-md'
-            : 'bg-white'
+            ? 'bg-white/95 backdrop-blur-md shadow-sm border-cream-200'
+            : 'bg-white border-cream-200'
         )}
       >
         <div className="section-padding">
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-              <span className="font-serif text-2xl lg:text-3xl font-bold tracking-widest text-navy-950">
+            <Link href="/" className="flex flex-col items-center flex-shrink-0 group">
+              <span className="font-serif text-2xl lg:text-3xl font-bold tracking-[0.22em] text-navy-950 group-hover:text-navy-800 transition-colors">
                 GIFT<span className="text-gold-500">ORA</span>
               </span>
+              <span className="text-[9px] tracking-[0.3em] uppercase text-cream-500 font-medium -mt-0.5 hidden lg:block">Curated Gift Boxes</span>
             </Link>
 
             {/* Desktop Nav */}

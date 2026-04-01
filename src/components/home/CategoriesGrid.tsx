@@ -27,8 +27,12 @@ export function CategoriesGrid({ categories }: { categories: Category[] }) {
     <section className="py-16 lg:py-24 bg-cream-50">
       <div className="section-padding">
         <div className="text-center mb-12">
-          <p className="text-gold-600 text-sm font-semibold uppercase tracking-widest mb-3">Shop by Occasion</p>
-          <h2 className="font-serif text-3xl lg:text-4xl font-bold text-navy-950 mb-4">
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="h-px w-12 bg-cream-300" />
+            <p className="text-gold-600 text-xs font-semibold uppercase tracking-[0.2em]">Shop by Occasion</p>
+            <div className="h-px w-12 bg-cream-300" />
+          </div>
+          <h2 className="font-serif text-3xl lg:text-5xl font-bold text-navy-950 mb-4">
             Find the Perfect Gift
           </h2>
           <p className="text-cream-600 max-w-xl mx-auto">
