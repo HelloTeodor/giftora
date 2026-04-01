@@ -104,9 +104,13 @@ const config: Config = {
         playfair: ['Playfair', 'serif'],
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        sm:   '2px',
+        DEFAULT: '4px',
+        md:   '4px',
+        lg:   '6px',
+        xl:   '8px',
+        '2xl':'10px',
+        '3xl':'12px',
       },
       keyframes: {
         'accordion-down': {
