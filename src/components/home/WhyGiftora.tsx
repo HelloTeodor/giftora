@@ -69,7 +69,7 @@ export function WhyGiftora({ products = [] }: Props) {
       ));
 
   return (
-    <section className="py-7 lg:py-10 bg-cream-50 relative">
+    <section className="py-2 lg:py-5 bg-cream-50 relative">
 
       <div className="section-padding">
 
