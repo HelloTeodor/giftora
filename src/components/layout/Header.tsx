@@ -74,7 +74,7 @@ export function Header() {
     <>
       {/* Announcement bar — infinite ticker */}
       <div className="bg-navy-950 text-white text-xs py-2 overflow-hidden">
-        <div className="flex w-max animate-marquee">
+        <div className="flex animate-marquee" style={{ width: 'max-content' }}>
           {[0, 1].map((n) => (
             <span key={n} className="flex items-center whitespace-nowrap pr-20">
               <span className="tracking-[0.12em] font-medium">Free shipping on orders over €75</span>
