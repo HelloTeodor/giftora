@@ -28,7 +28,7 @@ export function WhyGiftora({ products = [] }: Props) {
           <Link
             key={product.id}
             href={`/products/${product.slug}`}
-            className="group block bg-white rounded-xl overflow-hidden shadow-card hover:shadow-premium transition-all"
+            className="group block bg-white rounded-xl overflow-hidden transition-all"
           >
             <div className="relative aspect-square">
               {img ? (
@@ -58,7 +58,7 @@ export function WhyGiftora({ products = [] }: Props) {
         );
       })
     : Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="bg-white rounded-xl overflow-hidden shadow-card">
+        <div key={i} className="bg-white rounded-xl overflow-hidden">
           <div className="aspect-square bg-cream-100 animate-shimmer" />
           <div className="p-3 space-y-2">
             <div className="h-2.5 bg-cream-200 rounded w-1/2 animate-shimmer" />
@@ -69,28 +69,29 @@ export function WhyGiftora({ products = [] }: Props) {
       ));
 
   return (
-    <section className="py-14 lg:py-20 bg-cream-50 relative overflow-hidden">
+    <section className="py-14 lg:py-20 bg-cream-50 relative">
 
       <div className="section-padding">
 
         {/* ── DESKTOP ── */}
-        <div className="hidden lg:grid items-center" style={{ gridTemplateColumns: '2fr 3fr', gap: '2rem' }}>
+        <div className="hidden lg:grid items-center relative" style={{ gridTemplateColumns: '2fr 3fr', gap: '2rem' }}>
 
-          {/* LEFT — watercolor circle bleeds off left viewport edge */}
-          <div className="relative flex items-center justify-center" style={{ minHeight: '540px' }}>
-            {/* Circle image: negative left so it bleeds off the container's left edge */}
-            <div
-              className="absolute pointer-events-none"
-              style={{ top: '-15%', bottom: '-15%', left: '-55%', right: '-5%' }}
-            >
-              <Image
-                src="https://i.imgur.com/I3p4nka.png"
-                alt=""
-                fill
-                className="object-contain"
-                aria-hidden
-              />
-            </div>
+          {/* Watercolor — direct child of grid, absolute, behind everything */}
+          <div
+            className="absolute pointer-events-none z-0"
+            style={{ top: '50%', left: '-120px', transform: 'translateY(-50%)', width: '650px', height: '650px' }}
+          >
+            <Image
+              src="https://i.imgur.com/I3p4nka.png"
+              alt=""
+              fill
+              className="object-contain w-full h-full"
+              aria-hidden
+            />
+          </div>
+
+          {/* LEFT — text on top of watercolor */}
+          <div className="relative z-10 flex items-center justify-center" style={{ minHeight: '540px' }}>
 
             {/* Text on top of watercolor */}
             <div className="relative z-10 text-center max-w-[280px] px-2">
@@ -112,8 +113,8 @@ export function WhyGiftora({ products = [] }: Props) {
             </div>
           </div>
 
-          {/* RIGHT — products on plain background */}
-          <div>
+          {/* RIGHT — solid panel overlapping the watercolor from the right */}
+          <div className="relative z-20 -ml-20 bg-[#F6F1E8] p-8 rounded-lg">
             <p className="text-center text-xs font-semibold uppercase tracking-[0.25em] text-icy-500 mb-6">
               Shop Best Sellers
             </p>
