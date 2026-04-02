@@ -76,12 +76,12 @@ export function Header() {
       <style>{`
         @keyframes ticker-scroll {
           0%   { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+          100% { transform: translateX(-16.6667%); }
         }
       `}</style>
       <div className="bg-navy-950 text-white text-xs py-2 overflow-hidden">
         <div style={{ display: 'flex', width: 'max-content', animation: 'ticker-scroll 30s linear infinite' }}>
-          {[0, 1].map((n) => (
+          {[0, 1, 2, 3, 4, 5].map((n) => (
             <span key={n} style={{ display: 'flex', alignItems: 'center', whiteSpace: 'nowrap', paddingRight: '5rem' }}>
               <span className="tracking-[0.12em] font-medium">Free shipping on orders over €75</span>
               <span className="mx-8 opacity-40">·</span>
