@@ -69,7 +69,7 @@ export function WhyGiftora({ products = [] }: Props) {
       ));
 
   return (
-    <section className="py-14 lg:py-20 bg-cream-50 relative">
+    <section className="py-7 lg:py-10 bg-cream-50 relative">
 
       <div className="section-padding">
 
@@ -79,7 +79,7 @@ export function WhyGiftora({ products = [] }: Props) {
           {/* Watercolor — direct child of grid, absolute, behind everything */}
           <div
             className="absolute pointer-events-none z-0"
-            style={{ top: '50%', left: '-120px', transform: 'translateY(-50%)', width: '650px', height: '650px' }}
+            style={{ top: '50%', left: '-120px', transform: 'translateY(-50%)', width: '340px', height: '340px' }}
           >
             <Image
               src="https://i.imgur.com/I3p4nka.png"
@@ -91,7 +91,7 @@ export function WhyGiftora({ products = [] }: Props) {
           </div>
 
           {/* LEFT — text on top of watercolor */}
-          <div className="relative z-10 flex items-center justify-center" style={{ minHeight: '540px' }}>
+          <div className="relative z-10 flex items-center justify-center" style={{ minHeight: '270px' }}>
 
             {/* Text on top of watercolor */}
             <div className="relative z-10 text-center max-w-[280px] px-2">
