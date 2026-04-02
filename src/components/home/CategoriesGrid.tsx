@@ -39,8 +39,8 @@ const displayNames: Record<string, string> = {
 
 const categoryImages: Record<string, string> = {
   'new-hire':  'https://i.pinimg.com/1200x/81/f9/d0/81f9d00a58dcc5b99b979faf4e626a46.jpg',
-  'christmas': 'https://images.unsplash.com/photo-1512909006721-3d6018887383?w=600&auto=format&fit=crop',
-  'birthday':  'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=600&auto=format&fit=crop',
+  'christmas': 'https://i.imgur.com/axKWpfD.jpeg',
+  'birthday':  'https://i.imgur.com/MzTsBQi.jpeg',
   'newborn':   'https://images.unsplash.com/photo-1522771930-78848d9293e8?w=600&auto=format&fit=crop',
   'valentines':'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&auto=format&fit=crop',
   'easter':    'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=600&auto=format&fit=crop',
