@@ -317,7 +317,7 @@ export function ProductForm({ categories, product }: Props) {
           </div>
         </div>
 
-        <button type="submit" disabled={saving} className="w-full flex items-center justify-center gap-2 bg-gold-500 text-white py-3 rounded-xl font-semibold hover:bg-gold-600 transition-colors shadow-gold disabled:opacity-60">
+        <button type="submit" disabled={saving} className="w-full flex items-center justify-center gap-2 bg-gold-500 text-white py-3 rounded-xl font-semibold hover:bg-gold-600 transition-colors disabled:opacity-60">
           <Save size={16} />
           {saving ? 'Saving…' : product ? 'Update Product' : 'Create Product'}
         </button>
