@@ -4,13 +4,13 @@
     {
       "name": "Next.js Dev Server",
       "runtimeExecutable": "/Users/helloteodor/.nvm/versions/node/v24.14.1/bin/node",
-      "runtimeArgs": ["/Users/helloteodor/Desktop/giftora/.claude/worktrees/clever-visvesvaraya/start-dev.js"],
+      "runtimeArgs": ["/Users/helloteodor/Desktop/giftora/.claude/worktrees/great-rhodes/start-dev.js"],
       "port": 3000
     },
     {
       "name": "Prisma Studio",
       "runtimeExecutable": "/Users/helloteodor/.nvm/versions/node/v24.14.1/bin/node",
-      "runtimeArgs": ["/Users/helloteodor/Desktop/giftora/.claude/worktrees/clever-visvesvaraya/node_modules/.bin/prisma", "studio"],
+      "runtimeArgs": ["/Users/helloteodor/Desktop/giftora/.claude/worktrees/great-rhodes/node_modules/.bin/prisma", "studio"],
       "port": 5555
     }
   ]
