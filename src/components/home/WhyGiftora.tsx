@@ -79,7 +79,7 @@ export function WhyGiftora({ products = [] }: Props) {
           {/* Watercolor — direct child of grid, absolute, behind everything */}
           <div
             className="absolute pointer-events-none z-0"
-            style={{ top: '50%', left: '-120px', transform: 'translateY(-50%)', width: '340px', height: '340px' }}
+            style={{ top: '50%', left: '-120px', transform: 'translateY(-50%)', width: '680px', height: '680px' }}
           >
             <Image
               src="https://i.imgur.com/I3p4nka.png"
