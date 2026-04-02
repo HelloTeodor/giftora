@@ -36,7 +36,7 @@ export function WhyGiftora({ products = [] }: Props) {
                   src={img}
                   alt={product.name}
                   fill
-                  sizes="(max-width: 768px) 50vw, 25vw"
+                  sizes="(max-width: 768px) 50vw, 30vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               ) : (
@@ -71,31 +71,35 @@ export function WhyGiftora({ products = [] }: Props) {
   return (
     <section className="py-14 lg:py-20 bg-cream-50 relative overflow-hidden">
 
-      {/* ── Desktop watercolor ── absolute relative to section, bleeds left edge */}
-      <div className="absolute inset-y-0 left-[-4%] right-[38%] hidden lg:block pointer-events-none">
-        <Image
-          src="https://i.imgur.com/I3p4nka.png"
-          alt=""
-          fill
-          className="object-contain scale-[1.15]"
-          aria-hidden
-        />
-      </div>
-
       <div className="section-padding">
 
-        {/* ── DESKTOP layout ── */}
-        <div className="hidden lg:flex items-center">
+        {/* ── DESKTOP ── */}
+        <div className="hidden lg:grid items-center" style={{ gridTemplateColumns: '2fr 3fr', gap: '2rem' }}>
 
-          {/* Left — text sits on top of the watercolor */}
-          <div className="relative z-10 flex-1 flex items-center justify-center py-20">
-            <div className="text-center max-w-sm px-4">
+          {/* LEFT — watercolor circle bleeds off left viewport edge */}
+          <div className="relative flex items-center justify-center" style={{ minHeight: '540px' }}>
+            {/* Circle image: negative left so it bleeds off the container's left edge */}
+            <div
+              className="absolute pointer-events-none"
+              style={{ top: '-15%', bottom: '-15%', left: '-55%', right: '-5%' }}
+            >
+              <Image
+                src="https://i.imgur.com/I3p4nka.png"
+                alt=""
+                fill
+                className="object-contain"
+                aria-hidden
+              />
+            </div>
+
+            {/* Text on top of watercolor */}
+            <div className="relative z-10 text-center max-w-[280px] px-2">
               <h2 className="font-serif text-3xl lg:text-4xl font-semibold text-navy-950 leading-snug mb-4">
                 Our Commitment to Sustainability
               </h2>
               <p className="text-navy-700 text-sm leading-relaxed mb-6">
                 As a family-owned business, we believe in thoughtful gifting that
-                doesn't harm the earth. We use eco-friendly materials, sustainable
+                doesn&apos;t harm the earth. We use eco-friendly materials, sustainable
                 practices, and a personal touch to create gifts that bring joy to
                 the heart and home.
               </p>
@@ -108,9 +112,9 @@ export function WhyGiftora({ products = [] }: Props) {
             </div>
           </div>
 
-          {/* Right — solid bg panel overlapping the left column */}
-          <div className="relative z-20 -ml-14 shrink-0 w-[420px] bg-cream-50 rounded-2xl py-8 px-7 shadow-[-16px_0_40px_rgba(8,68,99,0.07)]">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-icy-500 mb-4">
+          {/* RIGHT — products on plain background */}
+          <div>
+            <p className="text-center text-xs font-semibold uppercase tracking-[0.25em] text-icy-500 mb-6">
               Shop Best Sellers
             </p>
             <div className="grid grid-cols-2 gap-4">
@@ -120,10 +124,8 @@ export function WhyGiftora({ products = [] }: Props) {
 
         </div>
 
-        {/* ── MOBILE layout ── */}
+        {/* ── MOBILE ── */}
         <div className="lg:hidden space-y-10">
-
-          {/* Watercolor + text */}
           <div className="relative flex items-center justify-center">
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <div className="relative w-[140%] h-[140%]">
@@ -142,7 +144,7 @@ export function WhyGiftora({ products = [] }: Props) {
               </h2>
               <p className="text-navy-700 text-sm leading-relaxed mb-6">
                 As a family-owned business, we believe in thoughtful gifting that
-                doesn't harm the earth. We use eco-friendly materials, sustainable
+                doesn&apos;t harm the earth. We use eco-friendly materials, sustainable
                 practices, and a personal touch to create gifts that bring joy to
                 the heart and home.
               </p>
@@ -154,8 +156,6 @@ export function WhyGiftora({ products = [] }: Props) {
               </p>
             </div>
           </div>
-
-          {/* Products */}
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-icy-500 mb-4">
               Shop Best Sellers
@@ -164,7 +164,6 @@ export function WhyGiftora({ products = [] }: Props) {
               {productCards}
             </div>
           </div>
-
         </div>
 
       </div>
