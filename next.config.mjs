@@ -1,13 +1,5 @@
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  turbopack: {
-    root: __dirname,
-  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com' },
@@ -18,9 +10,6 @@ const nextConfig = {
       { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
       { protocol: 'https', hostname: 'platform-lookaside.fbsbx.com' },
     ],
-  },
-  experimental: {
-    serverActions: { allowedOrigins: ['localhost:3000'] },
   },
 };
 
