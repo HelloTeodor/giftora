@@ -67,7 +67,7 @@
 @layer components {
   .btn-gold {
     @apply bg-gold-500 text-white font-semibold px-6 py-3 rounded-lg
-           shadow-gold hover:bg-gold-600 hover:shadow-gold-lg transition-all duration-300
+           hover:bg-gold-600 transition-all duration-300
            hover:scale-[1.02] active:scale-[0.98] tracking-wide uppercase text-sm;
   }
 

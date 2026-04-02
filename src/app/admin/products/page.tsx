@@ -54,7 +54,7 @@ export default async function AdminProductsPage({
           <h1 className="font-serif text-3xl font-bold text-gray-900">Products</h1>
           <p className="text-gray-500 text-sm mt-1">{total} {activeFilter !== 'ALL' ? activeFilter.toLowerCase() : 'total'} products</p>
         </div>
-        <Link href="/admin/products/new" className="flex items-center gap-2 bg-gold-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-gold-600 transition-colors shadow-gold">
+        <Link href="/admin/products/new" className="flex items-center gap-2 bg-gold-500 text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-gold-600 transition-colors">
           <Plus size={16} /> Add Product
         </Link>
       </div>
