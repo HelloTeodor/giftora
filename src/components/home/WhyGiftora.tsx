@@ -114,7 +114,7 @@ export function WhyGiftora({ products = [] }: Props) {
           </div>
 
           {/* RIGHT — solid panel overlapping the watercolor from the right */}
-          <div className="relative z-20 -ml-20 bg-[#F6F1E8] p-8 rounded-lg">
+          <div className="relative z-20 -ml-20 bg-[#F6F1E8] p-8 rounded-xs">
             <p className="text-center text-xs font-semibold uppercase tracking-[0.25em] text-icy-500 mb-6">
               Shop Best Sellers
             </p>
