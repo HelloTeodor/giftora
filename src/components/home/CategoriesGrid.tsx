@@ -32,6 +32,13 @@ const fallbackCards = [
     image: 'https://res.cloudinary.com/dwastb4mg/image/upload/v1775335480/ChatGPT_Image_Apr_1_2026_at_11_13_21_PM_2_nkavuk.jpg',
     href: '/products',
   },
+  {
+    slug: 'personalized',
+    name: 'Personalized Gifts',
+    description: 'One-of-a-kind gifts crafted just for them.',
+    image: 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?w=600&auto=format&fit=crop',
+    href: '/products',
+  },
 ];
 
 const displayNames: Record<string, string> = {
@@ -63,8 +70,8 @@ const categoryDescriptions: Record<string, string> = {
 };
 
 export function CategoriesGrid({ categories }: { categories: Category[] }) {
-  const cards = categories.slice(0, 3).length === 3
-    ? categories.slice(0, 3).map((cat) => ({
+  const cards = categories.slice(0, 4).length === 4
+    ? categories.slice(0, 4).map((cat) => ({
         slug: cat.slug,
         name: displayNames[cat.slug] || cat.name,
         description: cat.description || categoryDescriptions[cat.slug] || 'Discover our curated collection.',
@@ -91,7 +98,7 @@ export function CategoriesGrid({ categories }: { categories: Category[] }) {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {cards.map((card) => (
             <Link
               key={card.slug}
@@ -103,7 +110,7 @@ export function CategoriesGrid({ categories }: { categories: Category[] }) {
                   src={card.image}
                   alt={card.name}
                   fill
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   className="object-cover"
                 />
               </div>
