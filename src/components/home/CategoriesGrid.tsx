@@ -14,19 +14,22 @@ const fallbackCards = [
   {
     slug: 'gift-boxes',
     name: 'Beautiful Gift Boxes',
-    image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=600&auto=format&fit=crop',
+    description: 'Elegant packaging for every special occasion.',
+    image: 'https://res.cloudinary.com/dwastb4mg/image/upload/v1775335470/ChatGPT_Image_Apr_1_2026_at_11_13_21_PM_vl6zr5.jpg',
     href: '/products',
   },
   {
-    slug: 'self-care',
-    name: 'Relaxing Spa Gift Sets',
-    image: 'https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=600&auto=format&fit=crop',
-    href: '/categories/self-care',
+    slug: 'luxury',
+    name: 'Luxury Packaging',
+    description: 'Premium materials with a refined finish.',
+    image: 'https://res.cloudinary.com/dwastb4mg/image/upload/v1775335487/ChatGPT_Image_Apr_1_2026_at_11_13_21_PM_1_vlqz2o.jpg',
+    href: '/products',
   },
   {
-    slug: 'personalized',
-    name: 'Personalized Gifts',
-    image: 'https://images.unsplash.com/photo-1513201099705-a9746e1e201f?w=600&auto=format&fit=crop',
+    slug: 'special-gifts',
+    name: 'Special Gifts',
+    description: 'Thoughtful selections made to impress.',
+    image: 'https://res.cloudinary.com/dwastb4mg/image/upload/v1775335480/ChatGPT_Image_Apr_1_2026_at_11_13_21_PM_2_nkavuk.jpg',
     href: '/products',
   },
 ];
@@ -48,53 +51,77 @@ const categoryImages: Record<string, string> = {
   'corporate': 'https://images.unsplash.com/photo-1497700003451-e1df943a194b?w=600&auto=format&fit=crop',
 };
 
+const categoryDescriptions: Record<string, string> = {
+  'new-hire':   'Impress your new team members with a thoughtful welcome.',
+  'christmas':  'Spread joy and warmth this festive season.',
+  'birthday':   'Make their birthday extra memorable.',
+  'newborn':    'Welcome the little ones with love.',
+  'valentines': 'Share your love with a beautiful gift.',
+  'easter':     'Celebrate spring with delightful surprises.',
+  'self-care':  'Treat yourself or someone special.',
+  'corporate':  'Professional gifts that leave a lasting impression.',
+};
+
 export function CategoriesGrid({ categories }: { categories: Category[] }) {
-  // Use first 3 real categories, or fallback cards
   const cards = categories.slice(0, 3).length === 3
     ? categories.slice(0, 3).map((cat) => ({
         slug: cat.slug,
         name: displayNames[cat.slug] || cat.name,
+        description: cat.description || categoryDescriptions[cat.slug] || 'Discover our curated collection.',
         image: cat.image || categoryImages[cat.slug] || fallbackCards[0].image,
         href: `/categories/${cat.slug}`,
       }))
     : fallbackCards;
 
   return (
-    <section className="py-14 lg:py-20 bg-white">
-      <div className="section-padding">
-        <h2 className="font-serif text-2xl lg:text-3xl font-semibold text-gold-500 mb-8">
-          Featured Collections
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 lg:gap-8">
+    <section className="bg-white">
+      <div className="max-w-6xl mx-auto py-20 px-4">
+
+        {/* Header Row */}
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-serif text-[#d39b2c]">
+            Featured collections
+          </h2>
+          <Link
+            href="/collections"
+            className="text-[#d39b2c] font-semibold hover:translate-x-1 transition-transform inline-block"
+          >
+            View all
+          </Link>
+        </div>
+
+        {/* Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {cards.map((card) => (
-            <div key={card.slug} className="flex flex-col items-center text-center group bg-cream-100 rounded-xl overflow-hidden shadow-card">
-              {/* Image — full width, flush top */}
-              <div className="relative w-full aspect-[4/3]">
+            <Link
+              key={card.slug}
+              href={card.href}
+              className="bg-[#FAF9F6] rounded-sm shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.03] overflow-hidden flex flex-col group"
+            >
+              <div className="relative aspect-[2/1]">
                 <Image
                   src={card.image}
                   alt={card.name}
                   fill
-                  sizes="(max-width: 640px) 100vw, 33vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover"
                 />
               </div>
-              {/* Text area */}
-              <div className="px-5 pt-5 pb-7 w-full">
-                <h3 className="font-serif text-xl font-semibold text-navy-950 mb-4">
+              <div className="p-4 text-start">
+                <h3 className="text-xl font-serif text-gray-800 mb-1">
                   {card.name}
                 </h3>
-                <Link href={card.href} className="btn-gold px-8">
-                  Shop Now
-                </Link>
+                <p className="text-gray-600 text-sm mb-2">
+                  {card.description}
+                </p>
+                <span className="text-[#d39b2c] text-lg font-semibold group-hover:translate-x-1 transition-transform inline-block">
+                  →
+                </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
-        <div className="mt-8 text-right">
-          <Link href="/collections" className="text-gold-500 font-semibold hover:text-gold-600 transition-colors">
-            View all →
-          </Link>
-        </div>
+
       </div>
     </section>
   );
