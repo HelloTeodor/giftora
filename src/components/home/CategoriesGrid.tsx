@@ -82,7 +82,7 @@ export function CategoriesGrid({ categories }: { categories: Category[] }) {
 
   return (
     <section className="bg-white">
-      <div className="w-[80%] mx-auto py-20">
+      <div className="w-[90%] mx-auto py-20">
 
         {/* Header Row */}
         <div className="flex items-center justify-between mb-6">
