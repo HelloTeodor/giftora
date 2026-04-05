@@ -75,7 +75,7 @@ export function CategoriesGrid({ categories }: { categories: Category[] }) {
 
   return (
     <section className="bg-white">
-      <div className="w-[90%] mx-auto py-20">
+      <div className="w-[90%] mx-auto pt-10 pb-[50px]">
 
         {/* Header Row */}
         <div className="flex items-center justify-between mb-6">
