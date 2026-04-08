@@ -8,7 +8,24 @@ const config: Config = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  safelist: ["ml-[-100px]", "left-[-150px]", "w-[750px]"],
+  safelist: [
+    "ml-[-100px]",
+    "left-[-150px]",
+    "w-[750px]",
+    "scale-[0.85]",
+    "max-w-[420px]",
+    "text-[42px]",
+    "text-[15px]",
+    "text-[11px]",
+    "text-[10px]",
+    "text-[18px]",
+    "text-[#2f4f4f]",
+    "text-[#caa86a]",
+    "bg-[#2f6f73]",
+    "tracking-[0.25em]",
+    "tracking-[0.35em]",
+    "h-[150px]",
+  ],
   theme: {
     extend: {
       colors: {
