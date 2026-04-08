@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 
 interface Product {
   id: string;
@@ -14,22 +13,26 @@ interface Props {
   products?: Product[];
 }
 
+const fallbackCards = [
+  { src: 'https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=800', name: 'Make a Wish Birthday', price: '59.60' },
+  { src: 'https://images.unsplash.com/photo-1607083206325-caf1edba7a0f?q=80&w=800', name: 'Make a Wish Birthday', price: '60.40' },
+  { src: 'https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=800', name: 'Sweet Sunshine Box',   price: null },
+  { src: 'https://images.unsplash.com/photo-1610701596061-2ecf227e85b2?q=80&w=800', name: 'Home Sweet Home Box', price: null },
+];
+
 export function WhyGiftora({ products = [] }: Props) {
   const bestSellers = products.slice(0, 4);
 
   return (
-    <div className="relative w-full flex items-center justify-center">
+    <div data-name="section_container" className="relative w-full flex items-center justify-center">
       <section className="relative w-[90%] mx-auto py-16">
 
         {/* WATERCOLOUR IMAGE */}
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src="https://res.cloudinary.com/dwastb4mg/image/upload/v1775496985/ChatGPT_Image_Apr_1_2026_at_11_40_18_PM_Background_Removed_tdmrh1.png"
+          className="absolute left-[-150px] top-1/2 -translate-y-1/2 w-[750px] max-w-none z-0 pointer-events-none select-none"
           alt=""
-          width={750}
-          height={750}
-          className="absolute top-1/2 -translate-y-1/2 z-0 pointer-events-none select-none"
-          style={{ left: '-150px', width: '750px', maxWidth: 'none', height: 'auto' }}
-          aria-hidden
         />
 
         {/* MAIN CONTENT */}
@@ -88,27 +91,21 @@ export function WhyGiftora({ products = [] }: Props) {
                   ? bestSellers.map((product) => {
                       const img =
                         product.images.find((i) => i.isPrimary)?.url ||
-                        product.images[0]?.url;
+                        product.images[0]?.url ||
+                        fallbackCards[0].src;
                       const price = product.salePrice ?? product.basePrice;
                       return (
                         <Link key={product.id} href={`/products/${product.slug}`}>
-                          <div className="relative w-full h-[150px] mb-3">
-                            {img ? (
-                              <Image
-                                src={img}
-                                alt={product.name}
-                                fill
-                                sizes="(max-width: 768px) 50vw, 20vw"
-                                className="object-cover rounded-sm"
-                              />
-                            ) : (
-                              <div className="w-full h-full bg-cream-100 rounded-sm flex items-center justify-center text-3xl">🎁</div>
-                            )}
-                          </div>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={img}
+                            alt={product.name}
+                            className="rounded-sm mb-3 w-full h-[150px] object-cover"
+                          />
                           <p className="text-[10px] tracking-[0.25em] text-[#caa86a] mb-1">
                             PERSONALIZE IT
                           </p>
-                          <h4 className="font-serif text-[18px] text-gray-800 leading-snug">
+                          <h4 className="font-serif text-[18px] text-gray-800">
                             {product.name}
                           </h4>
                           <p className="text-sm text-gray-500 italic">
@@ -117,12 +114,23 @@ export function WhyGiftora({ products = [] }: Props) {
                         </Link>
                       );
                     })
-                  : Array.from({ length: 4 }).map((_, i) => (
+                  : fallbackCards.map((card, i) => (
                       <div key={i}>
-                        <div className="w-full h-[150px] bg-gray-100 rounded-sm mb-3 animate-pulse" />
-                        <div className="h-2 bg-gray-100 rounded w-1/2 mb-2 animate-pulse" />
-                        <div className="h-4 bg-gray-100 rounded mb-1 animate-pulse" />
-                        <div className="h-3 bg-gray-100 rounded w-2/3 animate-pulse" />
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={card.src}
+                          alt={card.name}
+                          className="rounded-sm mb-3 w-full h-[150px] object-cover"
+                        />
+                        <p className="text-[10px] tracking-[0.25em] text-[#caa86a] mb-1">
+                          PERSONALIZE IT
+                        </p>
+                        <h4 className="font-serif text-[18px] text-gray-800">
+                          {card.name}
+                        </h4>
+                        {card.price && (
+                          <p className="text-sm text-gray-500 italic">From ${card.price}</p>
+                        )}
                       </div>
                     ))}
               </div>
