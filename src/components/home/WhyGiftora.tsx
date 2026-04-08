@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 interface Product {
   id: string;
@@ -14,19 +14,37 @@ interface Props {
 }
 
 const fallbackCards = [
-  { src: 'https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=800', name: 'Make a Wish Birthday', price: '59.60' },
-  { src: 'https://images.unsplash.com/photo-1607083206325-caf1edba7a0f?q=80&w=800', name: 'Make a Wish Birthday', price: '60.40' },
-  { src: 'https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=800', name: 'Sweet Sunshine Box',   price: null },
-  { src: 'https://images.unsplash.com/photo-1610701596061-2ecf227e85b2?q=80&w=800', name: 'Home Sweet Home Box', price: null },
+  {
+    src: "https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=800",
+    name: "Make a Wish Birthday",
+    price: "59.60",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1607083206325-caf1edba7a0f?q=80&w=800",
+    name: "Make a Wish Birthday",
+    price: "60.40",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=800",
+    name: "Sweet Sunshine Box",
+    price: null,
+  },
+  {
+    src: "https://images.unsplash.com/photo-1610701596061-2ecf227e85b2?q=80&w=800",
+    name: "Home Sweet Home Box",
+    price: null,
+  },
 ];
 
 export function WhyGiftora({ products = [] }: Props) {
   const bestSellers = products.slice(0, 4);
 
   return (
-    <div data-name="section_container" className="relative w-full flex items-center justify-center">
+    <div
+      data-name="section_container"
+      className="relative w-full flex items-center justify-center bg-white"
+    >
       <section className="relative w-[90%] mx-auto py-16">
-
         {/* WATERCOLOUR IMAGE */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -37,7 +55,6 @@ export function WhyGiftora({ products = [] }: Props) {
 
         {/* MAIN CONTENT */}
         <div className="relative grid lg:grid-cols-2 items-center z-10">
-
           {/* LEFT TEXT */}
           <div className="flex justify-center lg:justify-start">
             <div className="max-w-[420px] text-center lg:text-left ml-12">
@@ -60,7 +77,9 @@ export function WhyGiftora({ products = [] }: Props) {
                 LOVINGLY MADE
               </Link>
 
-              <p className="mt-3 text-sm text-gray-600">Eco-Friendly Packaging.</p>
+              <p className="mt-3 text-sm text-gray-600">
+                Eco-Friendly Packaging.
+              </p>
 
               {/* dots */}
               <div className="flex justify-center lg:justify-start gap-2 mt-4">
@@ -75,7 +94,6 @@ export function WhyGiftora({ products = [] }: Props) {
           {/* RIGHT WHITE CARD */}
           <div className="relative">
             <div className="bg-white rounded-sm shadow-lg p-8 ml-[-100px]">
-
               {/* HEADING */}
               <div className="flex items-center gap-4 mb-6">
                 <div className="flex-1 h-px bg-gray-300"></div>
@@ -95,7 +113,10 @@ export function WhyGiftora({ products = [] }: Props) {
                         fallbackCards[0].src;
                       const price = product.salePrice ?? product.basePrice;
                       return (
-                        <Link key={product.id} href={`/products/${product.slug}`}>
+                        <Link
+                          key={product.id}
+                          href={`/products/${product.slug}`}
+                        >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={img}
@@ -129,15 +150,15 @@ export function WhyGiftora({ products = [] }: Props) {
                           {card.name}
                         </h4>
                         {card.price && (
-                          <p className="text-sm text-gray-500 italic">From ${card.price}</p>
+                          <p className="text-sm text-gray-500 italic">
+                            From ${card.price}
+                          </p>
                         )}
                       </div>
                     ))}
               </div>
-
             </div>
           </div>
-
         </div>
       </section>
     </div>
