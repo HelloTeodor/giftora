@@ -45,6 +45,9 @@ export function WhyGiftora({ products = [] }: Props) {
       className="relative w-full flex items-center justify-center bg-white"
     >
       <section className="relative w-[90%] mx-auto py-16">
+      className="relative w-full flex align-center justify-center bg-white"
+    >
+      <section className="relative w-[90%] mx-auto py-16 bg-white">
         {/* WATERCOLOUR IMAGE */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -58,7 +61,7 @@ export function WhyGiftora({ products = [] }: Props) {
           {/* LEFT TEXT */}
           <div className="flex justify-center lg:justify-start">
             <div className="max-w-[420px] text-center lg:text-left ml-12">
-              <h2 className="font-serif text-[42px] leading-tight text-[#2f4f4f] mb-6">
+              <h2 className="serif text-[42px] leading-tight text-[#2f4f4f] mb-6">
                 Our Commitment <br />
                 to Sustainability
               </h2>
@@ -70,12 +73,9 @@ export function WhyGiftora({ products = [] }: Props) {
                 that bring joy to the heart and home.
               </p>
 
-              <Link
-                href="/about"
-                className="inline-block bg-[#2f6f73] text-white px-7 py-3 text-xs tracking-[0.25em] rounded-sm"
-              >
+              <button className="bg-[#2f6f73] text-white px-7 py-3 text-xs tracking-[0.25em] rounded-sm">
                 LOVINGLY MADE
-              </Link>
+              </button>
 
               <p className="mt-3 text-sm text-gray-600">
                 Eco-Friendly Packaging.
@@ -97,9 +97,11 @@ export function WhyGiftora({ products = [] }: Props) {
               {/* HEADING */}
               <div className="flex items-center gap-4 mb-6">
                 <div className="flex-1 h-px bg-gray-300"></div>
+
                 <h3 className="text-[11px] tracking-[0.35em] text-gray-500 whitespace-nowrap">
                   SHOP BEST SELLERS
                 </h3>
+
                 <div className="flex-1 h-px bg-gray-300"></div>
               </div>
 
@@ -117,6 +119,7 @@ export function WhyGiftora({ products = [] }: Props) {
                           key={product.id}
                           href={`/products/${product.slug}`}
                         >
+                        <div key={product.id}>
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={img}
@@ -126,13 +129,13 @@ export function WhyGiftora({ products = [] }: Props) {
                           <p className="text-[10px] tracking-[0.25em] text-[#caa86a] mb-1">
                             PERSONALIZE IT
                           </p>
-                          <h4 className="font-serif text-[18px] text-gray-800">
+                          <h4 className="serif text-[18px] text-gray-800">
                             {product.name}
                           </h4>
                           <p className="text-sm text-gray-500 italic">
                             From €{price.toFixed(2)}
                           </p>
-                        </Link>
+                        </div>
                       );
                     })
                   : fallbackCards.map((card, i) => (
@@ -146,7 +149,7 @@ export function WhyGiftora({ products = [] }: Props) {
                         <p className="text-[10px] tracking-[0.25em] text-[#caa86a] mb-1">
                           PERSONALIZE IT
                         </p>
-                        <h4 className="font-serif text-[18px] text-gray-800">
+                        <h4 className="serif text-[18px] text-gray-800">
                           {card.name}
                         </h4>
                         {card.price && (
