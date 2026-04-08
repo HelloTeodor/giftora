@@ -35,5 +35,6 @@ const fallbackCards = [
 ];
 
 export function WhyGiftora({ products = [] }: Props) {
-  const bestSellers = products.slice(0, 4);
+  void products;
+  return null;
 }
