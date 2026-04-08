@@ -106,7 +106,7 @@ export function Header() {
             {/* Logo — centered */}
             <Link href="/" className="flex flex-col items-center group">
               <span className="font-playfair text-3xl lg:text-4xl font-bold tracking-[0.04em] text-navy-950 leading-none">
-                Radu <span className="text-gold-500">&amp;</span> Co
+                Happy<span className="text-gold-500">Box</span>
               </span>
               <span className="text-[10px] italic text-navy-500 font-light tracking-wide mt-0.5">
                 Thoughtful Gifts &amp; Living
